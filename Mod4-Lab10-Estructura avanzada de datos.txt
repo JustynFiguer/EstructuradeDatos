@@ -1,0 +1,62 @@
+UNIVERSIDAD DE PANAMA
+Facultad de Informatica, Electronica y Comunicaciones (FIEC)
+Asignatura: Estructura de Datos
+Profesor: Angel Avila
+Desarrollado por: Justiniano Figueroa
+
+LABORATORIO 10 - ARBOL BINARIO CON TRES RECORRIDOS
+Modulo 4, Semana 12: Arboles Generales y Binarios
+----------------------------------------------------
+
+DESCRIPCION
+Este proyecto implementa un arbol binario en Python. El arbol se arma
+con dos clases: NodoArbol (dato, hijo izquierdo, hijo derecho) y
+ArbolBinario (insertar, recorridos, altura y tamano). Los recorridos
+se hacen de forma recursiva y se comparan sobre el mismo arbol.
+
+OBJETIVOS
+- Entender la terminologia de arboles: raiz, nodo, hoja, nivel, altura.
+- Diferenciar un arbol general de un arbol binario.
+- Implementar los recorridos preorden, inorden y postorden.
+- Relacionar la recursividad con el recorrido de arboles.
+
+ESTRUCTURA DEL PROYECTO
+  laboratorio/
+      lab12_arbol_binario.py   Codigo del laboratorio
+  LEEME.txt                    Este archivo
+
+COMO EJECUTARLO
+1. Tener instalado Python 3.
+2. Abrir una terminal dentro de la carpeta del proyecto.
+3. Ejecutar:
+       python laboratorio/lab12_arbol_binario.py
+   (en algunos equipos: python3 laboratorio/lab12_arbol_binario.py)
+
+QUE HACE EL PROGRAMA
+1. Muestra la presentacion y las instrucciones.
+2. Construye el arbol de ejemplo con los valores 10, 5, 20, 3, 7, 30.
+3. Muestra el arbol, la cantidad de nodos y la altura.
+4. Imprime los recorridos sobre el mismo arbol.
+5. Permite escribir numeros propios para armar otro arbol.
+
+ARBOL DE EJEMPLO
+            10
+           /  \
+          5    20
+         / \     \
+        3   7    30
+
+RESULTADO ESPERADO
+  Preorden    (raiz-izq-der): [10, 5, 3, 7, 20, 30]
+  Inorden     (izq-raiz-der): [3, 5, 7, 10, 20, 30]
+  Postorden   (izq-der-raiz): [3, 7, 5, 30, 20, 10]
+  Por niveles (con cola)    : [10, 5, 20, 3, 7, 30]
+  Cantidad de nodos: 6
+  Altura del arbol : 2
+
+NOTAS
+- Preorden sirve para copiar o guardar el arbol.
+- Inorden en un arbol de busqueda da los datos ordenados.
+- Postorden sirve para eliminar el arbol o calcular su tamano.
+- El recorrido por niveles usa una cola y corresponde a la tarea
+  autonoma de la semana.
