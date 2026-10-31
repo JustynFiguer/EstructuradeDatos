@@ -1,0 +1,117 @@
+UNIVERSIDAD DE PANAMA
+Facultad de Informatica, Electronica y Comunicaciones (FIEC)
+Asignatura: Estructura de Datos
+Profesor: Angel Avila
+Desarrollado por: Justiniano Figueroa
+
+LABORATORIO 3 - TALLER INTEGRADOR
+Simulador de historial de navegador
+Modulo 1: Estructuras de datos lineales (Cierre) - Semana 3
+----------------------------------------------------
+
+CONTENIDO DE LA SEMANA 3
+Esta semana cierra el Modulo 1. Se ven tres variantes de la cola, se
+integran pilas y colas en un taller y se presenta el proyecto final.
+
+1. Variantes de la cola
+   - Cola circular: el puntero del final da la vuelta al inicio del
+     arreglo. Asi no se desperdicia el espacio de los lugares que ya
+     se liberaron al sacar elementos.
+   - Cola de prioridad: los elementos salen segun su prioridad y no
+     segun el orden en que llegaron. Se usa en sistemas operativos y
+     en el algoritmo de Dijkstra.
+   - Deque (cola doblemente terminada): se puede insertar y eliminar
+     por los dos extremos.
+
+2. Ejemplos de uso real
+   - Buffer circular en redes.
+   - Reproduccion de musica en bucle.
+   - Historial de comandos en la terminal.
+
+3. Proyecto final
+   Se presenta el proyecto, las opciones de tema, el cronograma y la
+   formacion de equipos.
+
+ARCHIVOS DEL ENTREGABLE
+  laboratorio/
+      lab03_historial_navegador.py   Codigo del taller
+  LEEME.txt                          Este archivo
+
+COMO EJECUTARLO
+1. Tener instalado Python 3.
+2. Abrir una terminal dentro de la carpeta del proyecto.
+3. Ejecutar:
+       python laboratorio/lab03_historial_navegador.py
+   (en algunos equipos: python3 laboratorio/lab03_historial_navegador.py)
+
+QUE ES EL SIMULADOR
+Simula los botones Atras y Adelante de un navegador web usando dos
+pilas. Una pila es una estructura donde el ultimo en entrar es el
+primero en salir (LIFO).
+
+  - Pila atras: guarda las paginas que ya visitaste.
+  - Pila adelante: guarda las paginas a las que puedes volver despues
+    de haber retrocedido.
+  - actual: la pagina en la que estas. Empieza en "about:blank".
+
+COMO FUNCIONA CADA OPERACION
+  visitar(url)
+      La pagina actual se guarda en la pila atras, la nueva pagina
+      pasa a ser la actual y la pila adelante se vacia.
+
+  atras()
+      La pagina actual se guarda en la pila adelante y la actual pasa
+      a ser la ultima de la pila atras (se saca con pop). Si la pila
+      atras esta vacia, no hace nada.
+
+  adelante()
+      La pagina actual se guarda en la pila atras y la actual pasa a
+      ser la ultima de la pila adelante. Si la pila adelante esta
+      vacia, no hace nada.
+
+  estado()
+      Muestra la pagina actual y el contenido de las dos pilas.
+
+EL CODIGO
+- Clase Navegador con tres datos: actual, pila_atras y pila_adelante.
+  Las pilas son listas de Python: append() para meter y pop() para
+  sacar.
+- Una funcion mostrar_presentacion() con los datos de la universidad
+  y las instrucciones.
+- Un menu con cinco opciones que se repite hasta elegir salir.
+
+MENU DEL PROGRAMA
+  1. Visitar una pagina
+  2. Atras
+  3. Adelante
+  4. Ver estado
+  5. Salir
+
+EJEMPLO (igual al del README de la semana)
+  Estado inicial:  actual = about:blank
+  visitar a.com    actual = a.com
+  visitar b.com    actual = b.com
+  visitar c.com    actual = c.com
+                   atras = [about:blank, a.com, b.com]
+  atras            actual = b.com
+                   atras = [about:blank, a.com]
+                   adelante = [c.com]
+  atras            actual = a.com
+                   atras = [about:blank]
+                   adelante = [c.com, b.com]
+  adelante         actual = b.com
+                   atras = [about:blank, a.com]
+                   adelante = [c.com]
+  visitar d.com    actual = d.com
+                   atras = [about:blank, a.com, b.com]
+                   adelante = []   (se vacia al visitar una pagina nueva)
+
+COMPLEJIDAD
+Todas las operaciones (visitar, atras, adelante) son O(1), porque
+solo se agrega o se saca el ultimo elemento de una lista.
+
+OTROS PUNTOS DE LA SEMANA
+- Quiz formativo corto sobre pilas y colas.
+- Registrar el equipo del proyecto final en la plantilla de propuesta
+  (campo "Equipo").
+- Repasar pilas y colas con VisuAlgo antes del quiz de la semana 4.
