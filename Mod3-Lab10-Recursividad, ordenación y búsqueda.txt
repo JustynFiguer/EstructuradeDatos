@@ -1,0 +1,39 @@
+============================================================================
+LÉAME - LABORATORIO N° 10: RECURSIVIDAD, ORDENACIÓN Y BÚSQUEDA
+Universidad de Panamá
+Facultad de Informática, Electrónica y Comunicación
+Escuela de Ciencias de la Computación y Computación Móvil
+Asignatura: Estructura de Datos II (INF 222)
+Estudiante: Justiniano Figueroa
+Fecha: 31 de octubre de 2026
+============================================================================
+
+1. DESCRIPCIÓN GENERAL DEL PROGRAMA:
+Este documento describe el funcionamiento técnico del laboratorio número 10, 
+el cual implementa el algoritmo de búsqueda binaria mediante un enfoque recursivo 
+en el lenguaje de programación Python.
+
+2. DETALLES DE IMPLEMENTACIÓN Y FUNCIONES:
+- busqueda_binaria_recursiva(arr, izquierda, derecha, valor):
+  Función recursiva encargada de localizar un elemento dentro de un arreglo ordenado.
+  * Comprueba si el límite izquierdo supera al derecho (caso base de no existencia: retorna -1).
+  * Calcula el índice medio de manera segura.
+  * Compara el valor central con el objetivo: si coincide, retorna el índice; si el 
+    valor central es mayor, realiza la llamada recursiva hacia la mitad izquierda; 
+    en caso contrario, hacia la mitad derecha.
+
+- mostrar_lista(arr):
+  Función auxiliar que imprime de manera limpia y ordenada todos los elementos 
+  del arreglo en la consola.
+
+- main():
+  Función controladora que define un conjunto de datos estáticos ordenados, 
+  ejecuta la búsqueda del número objetivo (72), muestra el resultado en pantalla 
+  e incluye una pausa al finalizar para asegurar la correcta visualización en 
+  entornos de escritorio.
+
+3. INSTRUCCIONES DE EJECUCIÓN:
+- Asegúrate de tener instalado Python en tu equipo.
+- Puedes ejecutar el script `laboratorio_10.py` mediante doble clic o desde la 
+  terminal utilizando el comando: python laboratorio_10.py
+============================================================================

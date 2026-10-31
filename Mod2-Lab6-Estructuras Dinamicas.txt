@@ -1,0 +1,311 @@
+﻿==============================================================================
+ LABORATORIO - SEMANA 6
+ LISTA CIRCULAR
+==============================================================================
+
+ Universidad de Panamá
+ Facultad de Informática, Electrónica y Comunicación (FIEC)
+ Técnico de Comunicaciones
+ Asignatura : Estructura de Datos - INF222
+ Módulo 2   : Estructuras de datos dinámicas lineales
+ Semana     : 6 - Listas circulares
+ Desarrollado por : Justiniano Figueroa
+ Profesor         : Ángel Ávila
+ Periodo          : Segundo semestre
+ Archivo          : lab06_lista_circular.py
+ Lenguaje         : Python 3
+
+
+------------------------------------------------------------------------------
+ 1. DE QUÉ TRATA ESTE LABORATORIO
+------------------------------------------------------------------------------
+
+ Este laboratorio es una continuación del de la semana pasada. Allá se hizo
+ una lista enlazada simple, que termina en None. Ahora se hace una lista
+ circular: la lista no tiene final, porque el último nodo vuelve a apuntar
+ al primero.
+
+ El programa crea la lista, le agrega y le quita datos, la prueba con varios
+ casos y al final muestra un ejemplo de uso real: repartir turnos entre
+ varias personas.
+
+
+------------------------------------------------------------------------------
+ 2. QUÉ ES UNA LISTA CIRCULAR (EXPLICADO FÁCIL)
+------------------------------------------------------------------------------
+
+ Piense en una ronda de niños tomados de la mano en un círculo: cada niño
+ conoce al que tiene al lado, y el último de la fila le da la mano al primero.
+ No hay un "último" de verdad.
+
+ Cada nodo guarda dos cosas: el dato y a quién apunta.
+
+ Lista enlazada simple (la de la semana 5):
+
+     cabeza
+       |
+       v
+     [10] --> [20] --> [30] --> None
+
+ Lista circular (la de esta semana):
+
+     cabeza
+       |
+       v
+     [10] --> [20] --> [30] --+
+       ^                      |
+       +----------------------+
+
+ Diferencia importante: en la lista simple se sabe que se llegó al final
+ cuando el siguiente es None. En la circular NUNCA hay None, así que hay que
+ parar cuando se vuelve a llegar a la cabeza. Si no se hace eso, el programa
+ da vueltas para siempre.
+
+ Para qué sirve: todo lo que se repite en ronda. Por ejemplo, turnos de un
+ juego, la cola de procesos de un sistema operativo, una lista de canciones
+ en repetición.
+
+
+------------------------------------------------------------------------------
+ 3. QUÉ HACE EL PROGRAMA
+------------------------------------------------------------------------------
+
+ La clase ListaCircular tiene estos métodos:
+
+ insertar_inicio(dato)   Agrega un dato al principio de la lista.
+ insertar_final(dato)    Agrega un dato al final de la lista.
+ eliminar(dato)          Quita el primer nodo que tenga ese dato. Devuelve
+                         True si lo quitó y False si no lo encontró.
+ buscar(dato)            Devuelve la posición del dato (empezando en 0), o
+                         -1 si no está.
+ longitud()              Cuenta cuántos nodos hay.
+ recorrer()              Devuelve una lista de Python con los datos, dando
+                         una sola vuelta.
+ avanzar()               Mueve la cabeza al siguiente nodo y devuelve el
+                         dato que estaba en la cabeza. Sirve para repartir
+                         turnos. Si la lista está vacía da IndexError.
+ esta_vacia()            Devuelve True si no hay nodos.
+ print(lista)            Muestra la lista así:  10 -> 20 -> 30 -> (vuelve a 10)
+
+ Además el programa corre 31 pruebas (operaciones básicas y casos borde) y
+ una demostración de turnos.
+
+
+------------------------------------------------------------------------------
+ 4. QUÉ NO HACE
+------------------------------------------------------------------------------
+
+ Para que el laboratorio se mantenga sencillo, hay cosas que no se incluyeron:
+
+   - No es una lista doblemente enlazada: cada nodo solo conoce al siguiente,
+     no al anterior. Eso queda para la semana 7.
+   - No guarda dónde está el último nodo ni cuántos nodos hay. Por eso, para
+     insertar al final o para saber la longitud, hay que recorrer la lista.
+   - No tiene insertar en una posición ni eliminar por posición (eso sí se
+     hizo en la semana 5 con la lista simple).
+   - No tiene un menú para escribir datos con el teclado. Todo se prueba con
+     datos ya escritos en el programa.
+   - Eliminar quita solo la primera coincidencia. Si el dato está repetido,
+     el segundo se queda.
+   - Los datos se guardan solo en memoria: al cerrar el programa se pierden.
+   - No ordena los datos: quedan en el orden en que se insertaron.
+
+
+------------------------------------------------------------------------------
+ 5. CÓMO SE HIZO
+------------------------------------------------------------------------------
+
+ PASO 1. Partir de la lista enlazada de la semana 5. Se copió la idea de
+ las dos clases, Nodo y la lista con su cabeza, y se pensó qué cambia para
+ que sea circular.
+
+ PASO 2. Clase Nodo. Es igual que antes: guarda el dato y un "siguiente".
+
+ PASO 3. Clase ListaCircular. Solo guarda la cabeza. Empieza en None, que es
+ una lista vacía.
+
+ PASO 4. Pensar el caso especial de la lista vacía y el de un solo nodo. Es
+ lo más importante de la lista circular:
+     - Cuando se agrega el primer nodo, ese nodo se apunta a sí mismo.
+         [5] --+
+          ^    |
+          +----+
+     - Así, con un solo nodo, el siguiente de la cabeza ES la cabeza.
+
+ PASO 5. insertar_final(dato).
+     1. Si la lista está vacía, el nodo nuevo se apunta a sí mismo y es la
+        cabeza.
+     2. Si no, se busca el último nodo: es el que tiene como siguiente a
+        la cabeza. Se avanza con un while hasta encontrarlo.
+     3. El último apunta al nodo nuevo, y el nuevo apunta a la cabeza.
+
+ PASO 6. insertar_inicio(dato). Casi igual que el anterior, solo que:
+     1. Se busca el último nodo.
+     2. El nodo nuevo apunta a la cabeza actual.
+     3. El último apunta al nodo nuevo (así el círculo no se rompe).
+     4. La cabeza pasa a ser el nodo nuevo.
+ Aquí está la parte que más cuesta: en una lista simple bastaba con cambiar
+ la cabeza, pero en la circular hay que acordarse de arreglar también el
+ último nodo, porque él apunta a la cabeza.
+
+ PASO 7. eliminar(dato). Hay que pensar en varios casos:
+
+     Lista vacía        No hay nada que quitar: devuelve False.
+     Un solo nodo       Si es el dato, la cabeza queda en None. Si no, False.
+     Es la cabeza       La cabeza pasa al segundo nodo, y el último nodo
+                        tiene que apuntar a la nueva cabeza.
+     Está en el medio   El nodo anterior salta al nodo borrado.
+     Es el último       El anterior salta al borrado y queda apuntando a la
+                        cabeza (por eso funciona sin hacer nada especial).
+     No existe          Se da una vuelta completa y devuelve False.
+
+ PASO 8. buscar, longitud y recorrer. Los tres recorren la lista con la
+ misma idea: empezar en la cabeza y parar cuando se vuelve a la cabeza.
+
+ PASO 9. avanzar(). Es el método propio de la lista circular. No quita nada,
+ solo mueve la cabeza una posición:
+     1. Guarda el dato de la cabeza.
+     2. La cabeza pasa al siguiente.
+     3. Devuelve el dato guardado.
+ Como la lista es un círculo, se puede llamar tantas veces como se quiera y
+ nunca se acaba.
+
+ PASO 10. Pruebas. Se hizo una función verificar() que compara lo que dio el
+ programa con lo que se esperaba e imprime OK o FALLO. Para comprobar que la
+ lista de verdad es circular se llama avanzar() más veces que la cantidad de
+ nodos y se mira que los datos se repitan.
+
+ PASO 11. Demostración de turnos (sección 8).
+
+
+------------------------------------------------------------------------------
+ 6. SEGUIMIENTO DE UN EJEMPLO
+------------------------------------------------------------------------------
+
+ Se parte de una lista vacía.
+
+     insertar_final(20)        20 -> (vuelve a 20)
+     insertar_final(30)        20 -> 30 -> (vuelve a 20)
+     insertar_inicio(10)       10 -> 20 -> 30 -> (vuelve a 10)
+
+ Qué pasa por dentro en insertar_inicio(10):
+     el último nodo es el 30 (su siguiente es la cabeza, el 20)
+     el 10 apunta al 20
+     el 30 apunta al 10
+     la cabeza es ahora el 10
+
+ Ahora se elimina el 20 (está en el medio):
+     anterior = 10, actual = 20
+     el 10 salta al 20 y apunta al 30
+     resultado: 10 -> 30 -> (vuelve a 10)
+
+
+------------------------------------------------------------------------------
+ 7. PRUEBAS (31)
+------------------------------------------------------------------------------
+
+ OPERACIONES BÁSICAS
+   - Insertar al inicio y al final
+   - Longitud, buscar un dato que existe y uno que no
+   - Comprobar que es circular (dos vueltas dan los mismos datos)
+   - Eliminar uno del medio, el último, la cabeza, un dato que no existe y el
+     único elemento
+   - Después de eliminar la cabeza, la lista sigue siendo circular
+
+ CASOS BORDE
+   Lista vacía
+     esta_vacia, longitud (0), buscar (-1), eliminar (False), recorrer ([]) y
+     avanzar da IndexError.
+   Un solo elemento
+     longitud 1, el nodo se apunta a sí mismo, avanzar siempre da el mismo
+     dato, buscar, eliminar deja la lista vacía.
+   Otros
+     insertar_final en una lista vacía, y datos repetidos (eliminar quita solo
+     el primero).
+
+ Resultado de una ejecución de prueba:
+
+     Pruebas correctas: 31
+     Pruebas con fallo: 0
+
+
+------------------------------------------------------------------------------
+ 8. DEMOSTRACIÓN: TURNOS
+------------------------------------------------------------------------------
+
+ Se crea una lista circular con tres personas: Ana, Luis y Marta. Cada vez
+ que se llama avanzar() se da el turno a la siguiente. Después de Marta,
+ vuelve a tocarle a Ana.
+
+     Participantes: Ana -> Luis -> Marta -> (vuelve a Ana)
+     Turno 1 -> Ana
+     Turno 2 -> Luis
+     Turno 3 -> Marta
+     Turno 4 -> Ana
+     Turno 5 -> Luis
+     Turno 6 -> Marta
+     Turno 7 -> Ana
+
+ Esta es la gran ventaja de la lista circular: no hace falta ningún código
+ extra para "volver al principio". El círculo lo hace solo.
+
+
+------------------------------------------------------------------------------
+ 9. COMPLEJIDAD
+------------------------------------------------------------------------------
+
+ Operación           Costo   Por qué
+ ------------------  ------  ------------------------------------------------
+ insertar_inicio     O(n)    hay que recorrer hasta el último nodo
+ insertar_final      O(n)    hay que recorrer hasta el último nodo
+ eliminar            O(n)    se recorre la lista buscando el dato
+ buscar              O(n)    se recorre la lista buscando el dato
+ longitud            O(n)    se cuentan los nodos
+ recorrer            O(n)    se pasa por todos los nodos
+ avanzar             O(1)    solo se mueve la cabeza
+
+ Nota: si la lista guardara una referencia al último nodo, insertar al inicio
+ y al final serían O(1). En este laboratorio no se hizo para mantenerlo
+ simple. Es una mejora posible.
+
+
+------------------------------------------------------------------------------
+ 10. REQUISITOS Y EJECUCIÓN
+------------------------------------------------------------------------------
+
+ Requisito: Python 3.8 o superior. No se usa ninguna librería externa.
+
+ Para ejecutar:
+   1. Guarde lab06_lista_circular.py en una carpeta.
+   2. Abra una consola (CMD, PowerShell o Terminal) en esa carpeta.
+   3. Escriba:
+
+          python lab06_lista_circular.py
+
+      (En algunos equipos el comando es  py  o  python3.)
+
+ Al terminar, el programa espera que se presione ENTER.
+
+
+------------------------------------------------------------------------------
+ 11. ENTREGA
+------------------------------------------------------------------------------
+
+ Siguiendo el orden de las semanas anteriores, el archivo va en:
+
+     modulo-2-estructuras-dinamicas/semana-06/laboratorio/
+         lab06_lista_circular.py
+
+ Para subirlo, desde la carpeta del repositorio:
+
+     git add modulo-2-estructuras-dinamicas/semana-06/laboratorio/
+     git commit -m "Laboratorio semana 6: lista circular"
+     git push
+
+ Antes de subirlo, conviene revisar el README de la semana 6 en el
+ repositorio del profesor por si indica otro nombre de archivo u otras
+ operaciones que deban incluirse.
+
+------------------------------------------------------------------------------
+ Fin del documento
+------------------------------------------------------------------------------

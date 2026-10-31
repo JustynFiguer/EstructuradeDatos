@@ -1,0 +1,184 @@
+﻿==============================================================================
+ LABORATORIO 3 - HISTORIAL DE NAVEGADOR
+==============================================================================
+
+ Universidad de Panamá
+ Facultad de Informática, Electrónica y Comunicación (FIEC)
+ Técnico de Comunicaciones
+ Asignatura : Estructura de Datos - INF222
+ Laboratorio: N.º 3 - Historial de navegador
+ Desarrollado por : Justiniano Figueroa
+ Profesor         : Ángel Ávila
+ Periodo          : Segundo semestre
+ Archivo          : lab03_historial_de_navegador.py
+ Lenguaje         : Python 3
+
+
+------------------------------------------------------------------------------
+ 1. DESCRIPCIÓN
+------------------------------------------------------------------------------
+
+ Este laboratorio simula el historial de un navegador web: las acciones
+ "Atrás" y "Adelante" que se usan todos los días al navegar.
+
+ El programa se maneja desde un menú en la consola. El usuario puede visitar
+ páginas, retroceder, avanzar y consultar el historial completo.
+
+ La idea principal es que este comportamiento se resuelve con DOS PILAS
+ (estructura LIFO: el último en entrar es el primero en salir).
+
+
+------------------------------------------------------------------------------
+ 2. CÓMO FUNCIONA (LAS DOS PILAS)
+------------------------------------------------------------------------------
+
+ La clase HistorialNavegador usa tres atributos:
+
+     atras      Pila con las páginas que ya se visitaron antes de la actual.
+     adelante   Pila con las páginas a las que se puede volver a avanzar.
+     actual     La página que se está viendo. Empieza en "about:blank"
+                (página en blanco, como al abrir un navegador nuevo).
+
+ Esquema:
+
+     atras (base -> tope)        actual         adelante (base -> tope)
+     [ ... , pag3, pag4 ]   <-   pag5    ->     [ pag7, pag6 ]
+                  ^ tope                                ^ tope
+
+ Qué hace cada acción:
+
+   VISITAR una página nueva
+     1. La página actual se guarda en la pila "atras".
+     2. La página nueva pasa a ser la actual.
+     3. La pila "adelante" se vacía (igual que en un navegador real: al abrir
+        una página nueva se pierde lo que había "adelante").
+
+   ATRÁS (volver)
+     1. La página actual se guarda en la pila "adelante".
+     2. La actual pasa a ser el tope de "atras" (pop).
+     Si "atras" está vacía, avisa: "No hay páginas anteriores."
+
+   ADELANTE (avanzar)
+     1. La página actual se guarda en la pila "atras".
+     2. La actual pasa a ser el tope de "adelante" (pop).
+     Si "adelante" está vacía, avisa: "No hay páginas siguientes."
+
+
+------------------------------------------------------------------------------
+ 3. MÉTODOS DE LA CLASE HistorialNavegador
+------------------------------------------------------------------------------
+
+ visitar(pagina)   Abre una página nueva y borra el historial "adelante".
+ volver()          Retrocede a la página anterior (botón Atrás).
+ avanzar()         Avanza a la página siguiente (botón Adelante).
+ mostrar()         Imprime la pila anterior, la página actual y la pila
+                   siguiente.
+
+ Funciones del programa:
+
+ menu()            Muestra el menú principal y repite hasta elegir "Salir".
+
+
+------------------------------------------------------------------------------
+ 4. MENÚ PRINCIPAL
+------------------------------------------------------------------------------
+
+     1. Visitar una página      Pide la dirección y la abre.
+     2. Atrás                   Vuelve a la página anterior.
+     3. Adelante                Avanza a la página siguiente.
+     4. Mostrar historial       Muestra las dos pilas y la página actual.
+     5. Salir                   Termina el programa.
+
+ Validaciones incluidas:
+   - Si se deja vacía la dirección de la página, muestra
+     "Debe escribir una dirección." y no la agrega.
+   - Si se escribe una opción que no está en el menú, muestra
+     "Opción no válida. Intente nuevamente." y vuelve a pedirla.
+   - Los espacios al inicio y al final de lo escrito se ignoran.
+   - Atrás y Adelante no fallan cuando no hay páginas: avisan con un mensaje.
+
+
+------------------------------------------------------------------------------
+ 5. EJEMPLO DE USO
+------------------------------------------------------------------------------
+
+ Sesión de prueba (lo que se escribe está a la derecha de cada paso):
+
+   Paso  Opción  Dato escrito         Resultado en pantalla
+   ----  ------  -------------------  ---------------------------------------
+    1      1     www.google.com       Página abierta: www.google.com
+    2      1     www.youtube.com      Página abierta: www.youtube.com
+    3      1     www.up.ac.pa         Página abierta: www.up.ac.pa
+    4      2     -                    Página actual: www.youtube.com
+    5      2     -                    Página actual: www.google.com
+    6      3     -                    Página actual: www.youtube.com
+    7      4     -                    (ver abajo)
+
+ Resultado del paso 7 (Mostrar historial):
+
+     Historial anterior: ['about:blank', 'www.google.com']
+     Página actual: www.youtube.com
+     Historial siguiente: ['www.up.ac.pa']
+
+ Si ahora se visita una página nueva (por ejemplo www.github.com), el
+ historial "siguiente" se borra:
+
+     Historial anterior: ['about:blank', 'www.google.com', 'www.youtube.com']
+     Página actual: www.github.com
+     Historial siguiente: []
+
+ Y al presionar Adelante aparece: "No hay páginas siguientes."
+
+ Si se retrocede hasta el inicio, la primera página a la que se llega es
+ "about:blank". Después de esa, Atrás muestra: "No hay páginas anteriores."
+
+
+------------------------------------------------------------------------------
+ 6. REQUISITOS Y EJECUCIÓN
+------------------------------------------------------------------------------
+
+ Requisito: Python 3.8 o superior. No se instala ninguna librería adicional.
+ Para ver la versión instalada, escriba en la consola:
+
+     python --version
+
+ Para ejecutar:
+   1. Guarde lab03_historial_de_navegador.py en una carpeta.
+   2. Abra una consola (CMD, PowerShell o Terminal) en esa carpeta.
+   3. Escriba:
+
+          python lab03_historial_de_navegador.py
+
+      (En algunos equipos el comando es  py  o  python3.)
+
+ Nota: al elegir la opción 5 (Salir) el programa termina de inmediato. Si se
+ abre con doble clic, la ventana se cierra sola. Para ver el resultado final,
+ ejecútelo desde la consola como se indica arriba.
+
+
+------------------------------------------------------------------------------
+ 7. COMPLEJIDAD Y LIMITACIONES
+------------------------------------------------------------------------------
+
+ - visitar, volver y avanzar usan append/pop sobre el final de una lista,
+   por lo que cada operación cuesta O(1).
+ - mostrar recorre las listas para imprimirlas: O(n).
+ - Las pilas están hechas con listas de Python (como en el Laboratorio 1).
+ - El historial vive solo en memoria: se pierde al cerrar el programa.
+ - No hay límite de páginas guardadas.
+ - No se verifica que la dirección sea una URL válida: cualquier texto que no
+   esté vacío se acepta como página.
+
+
+------------------------------------------------------------------------------
+ 8. RELACIÓN CON LA TEORÍA
+------------------------------------------------------------------------------
+
+ Este laboratorio aplica el mecanismo de deshacer/rehacer (undo/redo) visto
+ en la Semana 2: dos pilas, donde lo que se saca de una se guarda en la otra.
+ El mismo patrón se usa en editores de texto (Ctrl+Z y Ctrl+Y) y en el
+ historial de cualquier navegador.
+
+------------------------------------------------------------------------------
+ Fin del documento
+------------------------------------------------------------------------------

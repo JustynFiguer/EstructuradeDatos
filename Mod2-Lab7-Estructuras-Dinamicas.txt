@@ -1,0 +1,384 @@
+﻿==============================================================================
+ LABORATORIO - SEMANA 7
+ LISTA DOBLEMENTE ENLAZADA
+==============================================================================
+
+ Universidad de Panamá
+ Facultad de Informática, Electrónica y Comunicación (FIEC)
+ Técnico de Comunicaciones
+ Asignatura : Estructura de Datos - INF222
+ Módulo 2   : Estructuras de datos dinámicas lineales (cierre)
+ Semana     : 7 - Listas doblemente enlazadas
+ Desarrollado por : Justiniano Figueroa
+ Profesor         : Ángel Ávila
+ Periodo          : Segundo semestre
+ Archivo          : lab07_lista_doble.py
+ Lenguaje         : Python 3
+
+ Nota: en el plan del profesor este entregable aparece como "Laboratorio 6"
+ (su numeración propia). En el archivo se usó el número de la semana (7)
+ para el nombre y el encabezado.
+
+
+------------------------------------------------------------------------------
+ 1. DE QUÉ TRATA ESTE LABORATORIO
+------------------------------------------------------------------------------
+
+ En las semanas anteriores cada nodo solo sabía quién venía después de él.
+ Ahora cada nodo conoce a sus dos vecinos: el que tiene detrás (anterior) y el
+ que tiene delante (siguiente). Eso es una lista doblemente enlazada.
+
+ El programa crea la lista, le agrega y le quita datos por el principio, por
+ el final y por el medio, la recorre en las dos direcciones, y la prueba con
+ muchos casos. Al final muestra un ejemplo de uso: una lista de reproducción
+ de canciones que se puede recorrer hacia adelante y hacia atrás.
+
+ Esto es lo que pide el profesor para esta semana:
+   - Una lista doblemente enlazada con inserción y eliminación en ambos
+     extremos y en una posición intermedia.
+   - Poder recorrerla hacia adelante y hacia atrás.
+
+
+------------------------------------------------------------------------------
+ 2. QUÉ ES UNA LISTA DOBLEMENTE ENLAZADA (EXPLICADO FÁCIL)
+------------------------------------------------------------------------------
+
+ Es como un tren: cada vagón está enganchado al de adelante y al de atrás.
+ Se puede caminar por el tren de la locomotora al último vagón, o del último
+ vagón a la locomotora.
+
+ Cada nodo guarda tres cosas: el dato, el nodo anterior y el nodo siguiente.
+
+     None <-- [1] <--> [2] <--> [3] --> None
+               ^                ^
+            cabeza             cola
+
+ La lista recuerda dos nodos:
+     cabeza   el primero de la lista
+     cola     el último de la lista
+
+ El anterior de la cabeza es None y el siguiente de la cola es None.
+
+ Qué se gana con tener los dos enlaces:
+   - Se puede recorrer en las dos direcciones.
+   - Si ya se tiene el nodo, se puede quitar sin buscar al anterior (el nodo
+     mismo sabe quién es).
+   - Insertar y eliminar en los dos extremos es rápido, porque la lista guarda
+     la cabeza y la cola.
+
+ Qué cuesta:
+   - Cada nodo ocupa más memoria (una referencia más).
+   - Al insertar o eliminar hay que arreglar más enlaces, y es fácil olvidar
+     alguno.
+
+
+------------------------------------------------------------------------------
+ 3. QUÉ HACE EL PROGRAMA
+------------------------------------------------------------------------------
+
+ La clase ListaDoblementeEnlazada tiene estos métodos:
+
+ insertar_inicio(dato)          Agrega un dato antes de la cabeza.
+ insertar_final(dato)           Agrega un dato después de la cola.
+ insertar_en_posicion(pos,dato) Agrega un dato en esa posición (empezando en
+                                0). Si la posición es negativa o mayor que
+                                la longitud, da IndexError.
+ eliminar_inicio()              Quita el primero y devuelve su dato.
+ eliminar_final()               Quita el último y devuelve su dato.
+ eliminar(dato)                 Quita el primer nodo con ese dato. Devuelve
+                                True si lo quitó y False si no existe.
+ eliminar_posicion(pos)         Quita el nodo de esa posición y devuelve su
+                                dato. Fuera de rango da IndexError.
+ buscar(dato)                   Devuelve la posición del dato, o -1.
+ longitud()                     Cuenta los nodos.
+ recorrer_adelante()            Lista de Python con los datos, de la cabeza a
+                                la cola.
+ recorrer_atras()               Lista de Python con los datos, de la cola a la
+                                cabeza.
+ esta_vacia()                   True si no hay nodos.
+ print(lista)                   Muestra:  None <-> 1 <-> 2 <-> 3 <-> None
+
+ También tiene un método de apoyo, quitar_nodo(nodo), que usan los métodos de
+ eliminar. Ver el paso 6 de la sección 5.
+
+ El programa corre 51 pruebas y una demostración.
+
+
+------------------------------------------------------------------------------
+ 4. QUÉ NO HACE
+------------------------------------------------------------------------------
+
+   - No es circular: la cabeza no está unida a la cola. Los extremos terminan
+     en None.
+   - No tiene un menú para escribir datos con el teclado. Todo se prueba con
+     datos ya escritos en el programa.
+   - No guarda cuántos nodos tiene: longitud() los cuenta cada vez.
+   - Eliminar por dato quita solo la primera coincidencia. Si el dato está
+     repetido, el segundo se queda.
+   - No tiene búsqueda desde atrás: buscar siempre empieza en la cabeza.
+   - No ordena los datos: quedan en el orden en que se insertaron.
+   - Los datos se guardan solo en memoria: al cerrar el programa se pierden.
+
+
+------------------------------------------------------------------------------
+ 5. CÓMO SE HIZO
+------------------------------------------------------------------------------
+
+ PASO 1. Partir de las listas de las semanas 5 y 6. Se tomó la idea de las
+ dos clases (el nodo y la lista) y se pensó qué cambia al tener dos enlaces.
+
+ PASO 2. Clase Nodo. Ahora guarda tres cosas: dato, anterior y siguiente.
+ Los dos enlaces empiezan en None.
+
+ PASO 3. Clase ListaDoblementeEnlazada. Guarda la cabeza y la cola. Las dos
+ empiezan en None, que es una lista vacía.
+
+ PASO 4. Insertar en los extremos.
+
+     insertar_inicio:
+       - Si la lista está vacía, el nodo nuevo es cabeza y cola a la vez.
+       - Si no:
+           1. el nuevo apunta a la cabeza actual (nuevo.siguiente)
+           2. la cabeza actual apunta de vuelta al nuevo (cabeza.anterior)
+           3. la cabeza pasa a ser el nuevo
+
+     insertar_final es lo mismo pero al revés, con la cola:
+       - nuevo.anterior = cola
+       - cola.siguiente = nuevo
+       - la cola pasa a ser el nuevo
+
+ Como se guardan cabeza y cola, no hay que recorrer nada: es rápido.
+
+ PASO 5. insertar_en_posicion(pos, dato).
+     - Si pos es negativa o mayor que la longitud, da IndexError.
+     - Si pos es 0, usa insertar_inicio.
+     - Si pos es igual a la longitud, usa insertar_final.
+     - Si es una posición del medio, se avanza hasta el nodo que está ahora en
+       esa posición y se arreglan cuatro enlaces (ver sección 6).
+
+ PASO 6. quitar_nodo(nodo). Es el método más importante para eliminar. Recibe
+ el nodo que hay que sacar y arregla a sus vecinos:
+
+     - Si el nodo no tiene anterior, es la cabeza: la cabeza pasa a ser su
+       siguiente. Si sí tiene anterior, el anterior salta al siguiente.
+     - Si el nodo no tiene siguiente, es la cola: la cola pasa a ser su
+       anterior. Si sí tiene siguiente, el siguiente apunta de vuelta al
+       anterior.
+
+ Con esas dos revisiones se cubren todos los casos: primero, último, medio y
+ único elemento. Por eso los otros métodos de eliminar lo reutilizan:
+
+     eliminar_inicio     llama a quitar_nodo con la cabeza
+     eliminar_final      llama a quitar_nodo con la cola
+     eliminar            busca el nodo con ese dato y llama a quitar_nodo
+     eliminar_posicion   avanza hasta esa posición y llama a quitar_nodo
+
+ PASO 7. buscar, longitud, recorrer_adelante y recorrer_atras. Los tres
+ primeros recorren desde la cabeza con un while que sigue el "siguiente"
+ hasta llegar a None. recorrer_atras empieza en la cola y sigue el
+ "anterior".
+
+ PASO 8. Función enlaces_bien(lista). Solo se usa en las pruebas. Revisa que
+ la lista esté bien armada: que el anterior de la cabeza sea None, que el
+ siguiente de la cola sea None, y que en cada par de nodos vecinos el uno
+ apunte al otro en las dos direcciones. Es lo que más ayuda a encontrar
+ errores, porque es fácil arreglar un enlace y olvidar el otro.
+
+ PASO 9. Pruebas con la función verificar(), que compara lo que dio el
+ programa con lo que se esperaba e imprime OK o FALLO.
+
+ PASO 10. Demostración de la lista de reproducción (sección 8).
+
+
+------------------------------------------------------------------------------
+ 6. SEGUIMIENTOS (PARA ENTENDER LOS ENLACES)
+------------------------------------------------------------------------------
+
+ EJEMPLO A. Eliminar el nodo [2] de la lista  0 <-> 1 <-> 2 <-> 3.
+
+ quitar_nodo(nodo 2) arregla dos cosas:
+
+     el anterior del nodo (el 1) pasa a apuntar al siguiente del nodo (el 3)
+         1.siguiente = 3
+     el siguiente del nodo (el 3) pasa a apuntar al anterior del nodo (el 1)
+         3.anterior = 1
+
+ Antes:     None <-> [0] <-> [1] <-> [2] <-> [3] <-> None
+ Después:   None <-> [0] <-> [1] <-> [3] <-> None
+
+ El nodo 2 queda sin nadie que lo apunte y Python lo borra de la memoria.
+
+ EJEMPLO B. Insertar 15 en la posición 2 de la lista  0 <-> 1 <-> 2 <-> 3.
+
+ Se avanza dos veces desde la cabeza y se llega al nodo 2 (el que ahora ocupa
+ esa posición). Se llama "actual". El 15 tiene que quedar entre el 1 y el 2.
+
+     1. nuevo.anterior = actual.anterior       (el 15 mira al 1)
+     2. nuevo.siguiente = actual               (el 15 mira al 2)
+     3. actual.anterior.siguiente = nuevo      (el 1 mira al 15)
+     4. actual.anterior = nuevo                (el 2 mira al 15)
+
+ Antes:     None <-> [0] <-> [1] <-> [2] <-> [3] <-> None
+ Después:   None <-> [0] <-> [1] <-> [15] <-> [2] <-> [3] <-> None
+
+ El orden importa: el paso 3 usa actual.anterior, que todavía es el 1. Si se
+ hace el paso 4 antes, actual.anterior ya sería el 15 y el enlace del 1 se
+ pierde.
+
+
+------------------------------------------------------------------------------
+ 7. PRUEBAS (51)
+------------------------------------------------------------------------------
+
+ OPERACIONES BÁSICAS
+   - Insertar al inicio, al final y en una posición del medio
+   - Recorrer hacia adelante y hacia atrás
+   - Revisar los enlaces con enlaces_bien() después de insertar y de eliminar
+   - Longitud y buscar (un dato que existe y uno que no)
+   - Eliminar uno del medio, eliminar por dato, eliminar los dos extremos y
+     eliminar por posición
+
+ CASOS BORDE
+   Lista vacía
+     esta_vacia, longitud (0), buscar (-1), eliminar (False), recorridos ([])
+     y eliminar_inicio, eliminar_final y eliminar_posicion dan IndexError.
+   Un solo elemento
+     cabeza y cola son el mismo nodo, los dos recorridos dan lo mismo,
+     eliminarlo deja la lista vacía (cabeza y cola en None).
+   Posición fuera de rango
+     insertar en posición negativa o mayor que la longitud da IndexError;
+     insertar en la posición 0 o justo al final funciona.
+   Datos repetidos
+     eliminar quita solo el primero.
+
+ Resultado de una ejecución de prueba:
+
+     Pruebas correctas: 51
+     Pruebas con fallo: 0
+
+
+------------------------------------------------------------------------------
+ 8. DEMOSTRACIÓN: LISTA DE REPRODUCCIÓN
+------------------------------------------------------------------------------
+
+ Una lista de reproducción es un ejemplo típico de lista doble: se puede ir a
+ la canción siguiente, volver a la anterior, agregar una canción en el medio y
+ quitar otra.
+
+     Lista de canciones:
+       None <-> Cancion A <-> Cancion B <-> Cancion C <-> Cancion D <-> None
+     Reproducir hacia adelante: A, B, C, D
+     Reproducir hacia atrás:    D, C, B, A
+
+     Se agrega una canción en la posición 2:
+       A <-> B <-> Cancion Nueva <-> C <-> D
+     Se quita la Cancion B:
+       A <-> Cancion Nueva <-> C <-> D
+     Hacia atrás ahora: D, C, Cancion Nueva, A
+
+
+------------------------------------------------------------------------------
+ 9. COMPLEJIDAD
+------------------------------------------------------------------------------
+
+ Operación              Costo   Por qué
+ ---------------------  ------  ---------------------------------------------
+ insertar_inicio        O(1)    se usa la cabeza directamente
+ insertar_final         O(1)    se usa la cola directamente
+ eliminar_inicio        O(1)    se usa la cabeza directamente
+ eliminar_final         O(1)    se usa la cola directamente
+ insertar_en_posicion   O(n)    hay que contar y avanzar hasta la posición
+ eliminar_posicion      O(n)    hay que avanzar hasta la posición
+ eliminar(dato)         O(n)    hay que buscar el dato (quitarlo es O(1))
+ buscar                 O(n)    se recorre la lista
+ longitud               O(n)    se cuentan los nodos
+ recorrer (cualquier    O(n)    se pasa por todos los nodos
+   dirección)
+
+ Esto concuerda con lo que dice la teoría de la semana: insertar o eliminar
+ en cualquier punto es O(1) si ya se tiene el nodo, y O(n) para encontrarlo.
+
+
+------------------------------------------------------------------------------
+ 10. COMPARACIÓN DE LAS LISTAS DEL MÓDULO 2
+------------------------------------------------------------------------------
+
+                      Simple          Circular        Doble
+ -------------------  --------------  --------------  --------------------
+ Enlaces por nodo     siguiente       siguiente       anterior y siguiente
+ Dónde termina        en None         vuelve a la     en None, por los dos
+                                      cabeza          lados
+ Recorrer hacia       no              no              sí
+   atrás
+ Insertar al inicio   O(1)            O(n) (hay que   O(1)
+                                      arreglar el
+                                      último nodo)
+ Insertar al final    O(n)            O(n)            O(1) (con cola)
+ Memoria por nodo     menos           menos           más
+ Buen uso             pilas, listas   turnos, rondas  navegación en las dos
+                      sencillas                       direcciones, listas
+                                                      de reproducción
+
+ Las tres comparaciones de insertar son las de las implementaciones hechas en
+ estos laboratorios (sin puntero al último nodo, salvo en la lista doble).
+
+
+------------------------------------------------------------------------------
+ 11. REQUISITOS Y EJECUCIÓN
+------------------------------------------------------------------------------
+
+ Requisito: Python 3.8 o superior. No se usa ninguna librería externa.
+
+ Para ejecutar:
+   1. Guarde lab07_lista_doble.py en una carpeta.
+   2. Abra una consola (CMD, PowerShell o Terminal) en esa carpeta.
+   3. Escriba:
+
+          python lab07_lista_doble.py
+
+      (En algunos equipos el comando es  py  o  python3.)
+
+ Al terminar, el programa espera que se presione ENTER.
+
+
+------------------------------------------------------------------------------
+ 12. ENTREGA
+------------------------------------------------------------------------------
+
+ Ruta en el repositorio:
+
+     modulo-2-estructuras-dinamicas/semana-07/laboratorio/
+         lab07_lista_doble.py
+
+ Para subirlo, desde la carpeta del repositorio:
+
+     git add modulo-2-estructuras-dinamicas/semana-07/laboratorio/
+     git commit -m "Laboratorio semana 7: lista doblemente enlazada"
+     git push
+
+ Esta semana también se entrega la propuesta formal del proyecto final (en
+ equipo): el archivo proyecto-final/propuesta/PLANTILLA-propuesta.md, que se
+ renombra a propuesta.md con la información real. Eso es aparte de este
+ laboratorio.
+
+
+------------------------------------------------------------------------------
+ 13. PARA EL PARCIAL 1
+------------------------------------------------------------------------------
+
+ El Parcial 1 de esta semana es presencial, sin dispositivos y sin ayuda de
+ IA. Cubre los módulos 1 y 2 completos: pilas, colas, Big-O, referencias,
+ aliasing, lista simple, lista circular y lista doble. Un 35% es trazado de
+ código, o sea, seguir a mano qué hace el programa paso a paso.
+
+ Para esta lista en particular, conviene poder hacer en papel:
+   - Dibujar la lista y las flechas de anterior y siguiente.
+   - Insertar un nodo en el medio y decir qué cuatro enlaces cambian.
+   - Eliminar un nodo y decir qué dos enlaces cambian.
+   - Explicar qué pasa con la cabeza y la cola cuando solo hay un elemento.
+
+ Los seguimientos de la sección 6 sirven para practicar eso.
+
+------------------------------------------------------------------------------
+ Fin del documento
+------------------------------------------------------------------------------

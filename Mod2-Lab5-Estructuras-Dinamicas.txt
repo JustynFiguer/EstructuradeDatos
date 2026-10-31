@@ -1,0 +1,320 @@
+﻿==============================================================================
+ LABORATORIO - SEMANA 5
+ LISTA ENLAZADA SIMPLE
+==============================================================================
+
+ Universidad de Panamá
+ Facultad de Informática, Electrónica y Comunicación (FIEC)
+ Técnico de Comunicaciones
+ Asignatura : Estructura de Datos - INF222
+ Módulo 2   : Estructuras de datos dinámicas lineales
+ Semana     : 5 - Listas enlazadas simples
+ Desarrollado por : Justiniano Figueroa
+ Profesor         : Ángel Ávila
+ Periodo          : Segundo semestre
+ Archivo          : lab05_lista_enlazada.py
+ Lenguaje         : Python 3
+
+ Nota: en el plan de trabajo del profesor este entregable aparece como
+ "Laboratorio 4" (su numeración propia). En el archivo se usó el número de
+ la semana (5) para el nombre y el encabezado.
+
+
+------------------------------------------------------------------------------
+ 1. QUÉ PIDE EL PROFESOR
+------------------------------------------------------------------------------
+
+ Laboratorio:
+   1. Implementar paso a paso la clase ListaEnlazada.
+   2. Comparar con tiempos reales la inserción al inicio: lista de Python
+      contra lista enlazada.
+   3. Probar casos borde: lista vacía, un solo elemento e insertar en una
+      posición fuera de rango.
+
+ Operaciones que debe tener la lista:
+   - insertar al inicio, al final y en una posición intermedia
+   - eliminar por valor (casos: primero, intermedio, último, no existe)
+   - eliminar por posición
+   - buscar, recorrer y calcular la longitud
+
+ Tarea (trabajo autónomo):
+   - invertir()      invierte la lista en su lugar, sin crear nodos nuevos
+   - obtener(indice) devuelve el dato que está en esa posición
+
+
+------------------------------------------------------------------------------
+ 2. IDEA GENERAL: QUÉ ES UNA LISTA ENLAZADA
+------------------------------------------------------------------------------
+
+ Una lista enlazada es una cadena de nodos. Cada nodo guarda dos cosas:
+   - el dato
+   - una referencia al nodo que sigue
+
+ La lista solo recuerda cuál es el primer nodo, al que llama "cabeza". El
+ último nodo apunta a None, que significa que ahí termina la cadena.
+
+     cabeza
+       |
+       v
+     [10 | sig] --> [20 | sig] --> [30 | sig] --> None
+
+ Comparación con la lista de Python (que es un arreglo):
+
+     Lista de Python           Lista enlazada
+     -----------------------   -----------------------------------
+     Datos juntos en memoria   Nodos sueltos, unidos por referencias
+     Acceso por índice rápido  Hay que recorrer desde la cabeza
+     Insertar al inicio lento  Insertar al inicio muy rápido
+       (corre todos los datos)   (solo cambia la cabeza)
+
+
+------------------------------------------------------------------------------
+ 3. CÓMO SE HIZO EL LABORATORIO
+------------------------------------------------------------------------------
+
+ PASO 1. Crear el archivo en la carpeta que indica el profesor:
+
+     modulo-2-estructuras-dinamicas/semana-05/laboratorio/
+         lab05_lista_enlazada.py
+
+ En la parte de arriba van el encabezado del curso (universidad, facultad,
+ asignatura, laboratorio, autor y profesor), igual que en los laboratorios
+ anteriores.
+
+ PASO 2. Hacer la clase Nodo. Es lo más pequeño de todo: guarda el dato y
+ empieza con siguiente en None.
+
+     class Nodo:
+         def __init__(self, dato):
+             self.dato = dato
+             self.siguiente = None
+
+ PASO 3. Hacer la clase ListaEnlazada. Solo guarda la cabeza. Empieza en
+ None, que es una lista vacía.
+
+ PASO 4. insertar_inicio(dato).
+     1. Se crea un nodo nuevo.
+     2. El nodo nuevo apunta a la cabeza actual.
+     3. La cabeza pasa a ser el nodo nuevo.
+ No importa cuántos elementos haya: son siempre tres pasos. Por eso es O(1).
+
+ PASO 5. insertar_final(dato).
+     - Si la lista está vacía, el nodo nuevo es la cabeza.
+     - Si no, se recorre hasta el último nodo (el que tiene siguiente en
+       None) y se enlaza el nuevo ahí.
+ Como la lista no guarda dónde está el último, hay que recorrerla toda: O(n).
+
+ PASO 6. insertar_en_posicion(pos, dato).
+     - Si pos es negativa o mayor que la longitud, lanza IndexError.
+     - Si pos es 0, usa insertar_inicio.
+     - Si no, avanza hasta el nodo anterior a la posición, enlaza el nuevo
+       nodo con el que sigue y luego enlaza el anterior con el nuevo.
+ Ejemplo: lista 10, 20, 30, 40 e insertar 25 en la posición 2.
+     se avanza 1 vez y se llega al nodo 20
+     el 25 apunta al 30  y  el 20 apunta al 25
+     resultado: 10, 20, 25, 30, 40
+ El orden de los dos enlaces importa: primero se conecta el nuevo con el
+ siguiente y después el anterior con el nuevo. Si se hace al revés, se pierde
+ el resto de la lista.
+
+ PASO 7. eliminar(dato). Elimina el primer nodo con ese dato y devuelve True
+ si lo encontró y False si no existe. Tiene que contemplar cuatro casos:
+
+     Primero      la cabeza pasa a ser el segundo nodo
+     Intermedio   el nodo anterior salta al nodo borrado y apunta al que
+                  sigue
+     Último       el nodo anterior queda apuntando a None
+     No existe    no se cambia nada y devuelve False
+
+ Para eso se usan dos variables que avanzan juntas: "anterior" y "actual".
+
+ PASO 8. eliminar_posicion(pos). Igual que eliminar, pero por posición.
+ Devuelve el dato que quitó. Si la posición está fuera de rango lanza
+ IndexError.
+
+ PASO 9. Las operaciones de consulta:
+     buscar(dato)   recorre y devuelve la posición, o -1 si no está.
+     longitud()     recorre la lista contando nodos.
+     recorrer()     devuelve una lista de Python con los datos en orden.
+     __str__()      permite hacer print(lista) y ver 10 -> 20 -> 30 -> None
+
+ PASO 10. Pruebas. Se hizo una función pequeña llamada verificar() que
+ compara lo que dio el programa con lo que se esperaba e imprime OK o FALLO.
+ Las pruebas se agruparon en tres funciones: operaciones básicas, casos
+ borde y tarea.
+
+ PASO 11. Comparación de tiempos (sección 6 de este documento).
+
+ PASO 12. La tarea: invertir() y obtener() (sección 7 de este documento).
+
+
+------------------------------------------------------------------------------
+ 4. COMPLEJIDAD DE LAS OPERACIONES
+------------------------------------------------------------------------------
+
+ Operación                  Lista de Python   Lista enlazada (esta)
+ -------------------------  ---------------   ---------------------
+ Insertar al inicio         O(n)              O(1)
+ Insertar al final          O(1) amortizado   O(n)  (no guarda el último)
+ Insertar en posición k     O(n)              O(n)
+ Eliminar por valor         O(n)              O(n)
+ Buscar                     O(n)              O(n)
+ Acceder por índice         O(1)              O(n)
+ Longitud                   O(1)              O(n)  (no guarda contador)
+
+ Decisión de diseño: para mantener el laboratorio sencillo no se agregó un
+ puntero al último nodo ni un contador de tamaño. Con esas dos mejoras,
+ insertar_final y longitud pasarían a ser O(1), a cambio de tener que
+ mantenerlos actualizados en cada inserción y eliminación.
+
+
+------------------------------------------------------------------------------
+ 5. PRUEBAS Y CASOS BORDE (40 PRUEBAS)
+------------------------------------------------------------------------------
+
+ OPERACIONES BÁSICAS
+   - Insertar al inicio, al final y en posición
+   - Longitud, buscar un dato que existe y uno que no
+   - Eliminar el primero, uno del medio, el último y uno que no existe
+   - Eliminar por posición
+
+ CASOS BORDE (los que pide el profesor)
+   Lista vacía
+     esta_vacia, longitud (0), buscar (-1), eliminar (False), recorrer ([]),
+     invertir sin errores, y obtener / eliminar_posicion lanzan IndexError.
+   Un solo elemento
+     longitud 1, invertir lo deja igual, obtener(0), eliminar deja la lista
+     vacía.
+   Posición fuera de rango
+     insertar_en_posicion con una posición mayor que la longitud o negativa
+     lanza IndexError. Con la posición igual a la longitud funciona como
+     insertar al final, y con la posición 0 como insertar al inicio.
+
+ TAREA
+   invertir, que use los mismos nodos, invertir dos veces, obtener con
+   índices válidos e inválidos.
+
+ Resultado de una ejecución de prueba:
+
+     Pruebas correctas: 40
+     Pruebas con fallo: 0
+
+
+------------------------------------------------------------------------------
+ 6. COMPARACIÓN DE TIEMPOS: INSERTAR AL INICIO
+------------------------------------------------------------------------------
+
+ Qué se mide: cuánto tarda en insertar N números, uno por uno, siempre al
+ inicio.
+     Lista de Python:  lista.insert(0, dato)
+     Lista enlazada:   lista.insertar_inicio(dato)
+ El tiempo se toma con time.perf_counter(), antes y después de cada ciclo.
+
+ Resultado de una ejecución de prueba (en segundos):
+
+     Cantidad   Lista Python   Lista enlazada   Más rápida
+        5000       0.0032          0.0028       enlazada
+       10000       0.0107          0.0035       enlazada
+       20000       0.0432          0.0073       enlazada
+       50000       0.2606          0.0168       enlazada
+      100000       1.1893          0.0442       enlazada
+
+ Los números exactos cambian en cada computadora y en cada ejecución. Lo que
+ se mantiene siempre es la tendencia.
+
+ Qué se observa:
+   - La lista de Python crece muy rápido: al duplicar la cantidad, el
+     tiempo se multiplica por cuatro aproximadamente (de 0.0107 s con 10000 a
+     0.0432 s con 20000). Eso es O(n) por inserción, o sea O(n al cuadrado)
+     para hacer las N inserciones.
+   - La lista enlazada crece de forma casi proporcional a la cantidad.
+     Cada inserción es O(1), así que las N inserciones cuestan O(n).
+   - Con cantidades pequeñas la diferencia es mínima. Mientras más datos,
+     más ventaja tiene la lista enlazada.
+
+ Conclusión: para insertar mucho al inicio conviene la lista enlazada. Para
+ acceder rápido por índice conviene la lista de Python.
+
+
+------------------------------------------------------------------------------
+ 7. TAREA: invertir() Y obtener()
+------------------------------------------------------------------------------
+
+ invertir()
+ ----------
+ Invierte la lista cambiando hacia dónde apunta cada nodo. No crea nodos
+ nuevos ni copias. Se usan tres variables:
+
+     anterior   el nodo que ya se invirtió (empieza en None)
+     actual     el nodo que se está procesando (empieza en la cabeza)
+     siguiente  guarda el nodo que viene, para no perderlo
+
+ En cada vuelta:
+     1. Guardar  siguiente = actual.siguiente
+     2. Dar vuelta al enlace  actual.siguiente = anterior
+     3. Avanzar  anterior = actual  y  actual = siguiente
+ Al final, la cabeza pasa a ser "anterior" (el último nodo procesado).
+
+ Seguimiento con la lista 1 -> 2 -> 3:
+
+     Inicio   anterior=None  actual=1
+     Vuelta 1 siguiente=2   el 1 apunta a None    anterior=1  actual=2
+     Vuelta 2 siguiente=3   el 2 apunta al 1      anterior=2  actual=3
+     Vuelta 3 siguiente=None el 3 apunta al 2     anterior=3  actual=None
+     Fin      cabeza = 3
+
+     Resultado: 3 -> 2 -> 1 -> None
+
+ Cómo se comprobó que no se crean nodos nuevos: antes de invertir se guardan
+ los nodos en una lista; después de invertir se vuelven a guardar. Se
+ verifica que sean exactamente los mismos objetos, pero en orden contrario
+ (se compara con id()).
+ Complejidad: O(n) en tiempo y O(1) en memoria extra.
+
+ obtener(indice)
+ ---------------
+ Recorre la lista contando posiciones y devuelve el dato cuando el contador
+ llega al índice pedido. Si el índice es negativo o se pasa del final, lanza
+ IndexError. Es O(n), porque no hay acceso directo como en una lista de
+ Python.
+
+
+------------------------------------------------------------------------------
+ 8. REQUISITOS Y EJECUCIÓN
+------------------------------------------------------------------------------
+
+ Requisito: Python 3.8 o superior. Solo se usa el módulo time, que ya viene
+ con Python (no hay que instalar nada).
+
+ Para ejecutar:
+   1. Guarde lab05_lista_enlazada.py en una carpeta.
+   2. Abra una consola (CMD, PowerShell o Terminal) en esa carpeta.
+   3. Escriba:
+
+          python lab05_lista_enlazada.py
+
+      (En algunos equipos el comando es  py  o  python3.)
+
+ La comparación de tiempos tarda unos segundos (la parte de 100000 elementos
+ con la lista de Python es la más lenta). Al terminar, el programa espera que
+ se presione ENTER.
+
+
+------------------------------------------------------------------------------
+ 9. ENTREGA
+------------------------------------------------------------------------------
+
+ Ruta en el repositorio:
+
+     modulo-2-estructuras-dinamicas/semana-05/laboratorio/
+         lab05_lista_enlazada.py
+
+ Para subirlo, desde la carpeta del repositorio:
+
+     git add modulo-2-estructuras-dinamicas/semana-05/laboratorio/
+     git commit -m "Laboratorio semana 5: lista enlazada simple"
+     git push
+
+------------------------------------------------------------------------------
+ Fin del documento
+------------------------------------------------------------------------------

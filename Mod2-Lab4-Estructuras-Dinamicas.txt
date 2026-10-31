@@ -1,0 +1,356 @@
+﻿==============================================================================
+ LABORATORIO - SEMANA 4
+ REFERENCIAS Y ALIASING EN PYTHON
+==============================================================================
+
+ Universidad de Panamá
+ Facultad de Informática, Electrónica y Comunicación (FIEC)
+ Asignatura : Estructura de Datos - INF222
+ Módulo 2   : Estructuras de datos dinámicas lineales
+ Semana     : 4 - Punteros, memoria dinámica y referencias en Python
+ Desarrollado por : Justiniano Figueroa
+ Profesor         : Ángel Ávila
+ Archivo          : lab04_referencias_aliasing.py
+ Lenguaje         : Python 3
+
+
+------------------------------------------------------------------------------
+ 1. QUÉ PIDE EL PROFESOR
+------------------------------------------------------------------------------
+
+ El laboratorio de la semana tiene cuatro partes:
+
+   1. Ejercicios con id() para observar cuándo dos variables referencian el
+      mismo objeto.
+   2. Experimentos de aliasing: mutar a través de una segunda referencia.
+   3. Implementar una función que decida si mutar in situ o retornar una
+      copia.
+   4. Predicciones previas + verificación con Python Tutor.
+
+ La tarea es predecir la salida de los fragmentos del archivo ANTES de
+ ejecutarlos, verificar con Python Tutor y documentar si la predicción fue
+ correcta y por qué. Este documento recoge ese desarrollo.
+
+
+------------------------------------------------------------------------------
+ 2. IDEAS BÁSICAS (LO QUE HAY QUE ENTENDER ANTES)
+------------------------------------------------------------------------------
+
+ PUNTERO. En lenguajes como C, un puntero es una variable que guarda la
+ dirección de memoria donde está un dato. Desreferenciar es llegar al dato
+ usando esa dirección.
+
+ REFERENCIA EN PYTHON. En Python toda variable es una referencia a un objeto
+ que vive en memoria (el heap). La variable no contiene el dato: apunta a él.
+
+ id(x). Devuelve la identidad del objeto al que apunta x. Es el equivalente
+ de la dirección de memoria. Dos variables con el mismo id apuntan al MISMO
+ objeto. El operador  is  hace esa misma comparación:
+
+     a is b      es lo mismo que     id(a) == id(b)
+
+ MUTABLE E INMUTABLE.
+     Mutables   : list (el objeto se puede modificar en su lugar)
+     Inmutables : int, str, tuple (el objeto no se puede modificar; cualquier
+                  "cambio" crea un objeto nuevo)
+
+ ALIASING. Cuando dos variables apuntan al mismo objeto mutable. Si se muta
+ por una variable, el cambio se ve por la otra. Asignar una lista a otra
+ variable NO copia la lista:
+
+     lista_b = lista_a      # una sola lista, dos nombres
+
+ Esquema:
+
+     C (puntero)                    Python (referencia)
+     int arr[] = {1,2,3};           arr = [1, 2, 3]
+     int *p = arr;                  p = arr          (MISMO objeto)
+     p[0] = 99;                     p[0] = 99        (arr[0] también es 99)
+
+
+------------------------------------------------------------------------------
+ 3. CÓMO SE HIZO EL LABORATORIO
+------------------------------------------------------------------------------
+
+ PASO 1. Crear el archivo en la carpeta que pide el profesor:
+
+     modulo-2-estructuras-dinamicas/semana-04/laboratorio/
+         lab04_referencias_aliasing.py
+
+ PASO 2. Decidir la estructura. Se hizo un programa sencillo, de arriba hacia
+ abajo, con ocho ejercicios pequeños. Cada ejercicio imprime un título y su
+ resultado. En lugar de imprimir el número crudo de id() (que cambia en cada
+ ejecución) se imprimen comparaciones como  a is b  o  id(x) == id(y), que
+ siempre dan el mismo resultado y se pueden predecir.
+
+ PASO 3. Para cada ejercicio, primero se razonó la predicción, luego se
+ ejecutó el programa en Python 3 y se comparó con el resultado real. Más
+ abajo está el detalle de cada uno.
+
+ PASO 4. Verificar cada ejercicio paso a paso en Python Tutor, como pide el
+ profesor (instrucciones en la sección 6), y anotar si la predicción propia
+ coincidió. Este paso se hace en pythontutor.com.
+
+
+------------------------------------------------------------------------------
+ 4. LOS EJERCICIOS, UNO POR UNO
+------------------------------------------------------------------------------
+
+ EJERCICIO 1 - id() con enteros                       (Parte 1 del lab)
+ ---------------------------------------------------------------------
+     a = 42
+     b = a
+     print(a is b)          ->  True
+     b = b + 1
+     print(a, b)            ->  42 43
+     print(a is b)          ->  False
+
+ Por qué: b = a hace que b apunte al mismo objeto 42. Como los enteros son
+ inmutables, b + 1 no cambia el 42: crea un objeto nuevo (43) y b pasa a
+ apuntar a él. a sigue apuntando al 42.
+
+
+ EJERCICIO 2 - Aliasing con listas                    (Parte 2 del lab)
+ ---------------------------------------------------------------------
+     lista_a = [1, 2, 3]
+     lista_b = lista_a
+     print(lista_a is lista_b)      ->  True
+     lista_b.append(4)
+     print(lista_a)                 ->  [1, 2, 3, 4]
+
+ Por qué: solo existe una lista y dos nombres que apuntan a ella. append
+ muta el objeto, así que el cambio se ve desde las dos variables. Es el
+ mismo caso del esquema de C con  int *p = arr.
+
+
+ EJERCICIO 3 - Copias de una lista
+ ---------------------------------------------------------------------
+     original = [1, 2, 3]
+     copia1 = original.copy()
+     copia2 = list(original)
+     copia3 = copy.deepcopy(original)
+     copia1.append(99)
+     print(original)                ->  [1, 2, 3]
+     print(copia1)                  ->  [1, 2, 3, 99]
+     print(copia1 is original)      ->  False
+
+ Por qué: las tres formas de copiar crean una lista NUEVA e independiente.
+ Mutar copia1 ya no afecta a original. Para listas simples las tres dan el
+ mismo resultado; la diferencia aparece con listas anidadas (ejercicio 4).
+
+
+ EJERCICIO 4 - Copia superficial y copia profunda
+ ---------------------------------------------------------------------
+     matriz = [[1, 2], [3, 4]]
+     superficial = matriz.copy()
+     profunda = copy.deepcopy(matriz)
+     matriz[0][0] = 99
+     print(superficial)             ->  [[99, 2], [3, 4]]
+     print(profunda)                ->  [[1, 2], [3, 4]]
+     print(superficial[0] is matriz[0])   ->  True
+     print(profunda[0] is matriz[0])      ->  False
+
+ Por qué: copy() y list() son copias superficiales: copian la lista de
+ afuera, pero las listas de adentro siguen siendo las mismas (se comparten).
+ Por eso el cambio en matriz[0][0] se ve en superficial. deepcopy copia todo
+ de forma recursiva, así que profunda queda totalmente independiente.
+
+
+ EJERCICIO 5 - Tipos inmutables
+ ---------------------------------------------------------------------
+     texto = "hola"
+     otro = texto
+     otro += " mundo"
+     print(texto)                   ->  hola
+     print(otro)                    ->  hola mundo
+
+     tupla = (1, 2)
+     otra = tupla
+     otra = otra + (3,)
+     print(tupla)                   ->  (1, 2)
+     print(otra)                    ->  (1, 2, 3)
+
+ Por qué: str y tuple no se pueden modificar. La operación += (o +) crea un
+ objeto nuevo y la variable pasa a apuntar a él. El objeto original queda
+ intacto, así que aquí NO hay aliasing peligroso.
+
+
+ EJERCICIO 6 - Referencias dentro de funciones
+ ---------------------------------------------------------------------
+     def agregar_a_lista(lista, valor):
+         lista.append(valor)
+
+     def reasignar_lista(lista):
+         lista = [0]
+         return lista
+
+     datos = [1]
+     agregar_a_lista(datos, 2)
+     print(datos)                   ->  [1, 2]
+     datos2 = [5]
+     reasignar_lista(datos2)
+     print(datos2)                  ->  [5]
+
+ Por qué: al llamar una función, el parámetro es una referencia al MISMO
+ objeto que se pasó. Si la función lo muta (append), el cambio se ve afuera.
+ Si la función solo reasigna el nombre (lista = [0]), el nombre local pasa a
+ apuntar a otro objeto y el de afuera no se entera.
+
+
+ EJERCICIO 7 - Lista como parámetro por defecto
+ ---------------------------------------------------------------------
+     def acumular(valor, lista=[]):
+         lista.append(valor)
+         return lista
+
+     print(acumular(1))             ->  [1]
+     print(acumular(2))             ->  [1, 2]
+     print(acumular(3))             ->  [1, 2, 3]
+
+ Por qué: el valor por defecto se crea UNA sola vez, cuando se define la
+ función, y todas las llamadas comparten esa misma lista. Es un aliasing
+ escondido. Es el ejercicio que más sorprende al predecir. La forma segura
+ de escribirlo es  lista=None  y crear la lista dentro de la función.
+
+
+ EJERCICIO 8 - Mutar in situ o devolver una copia     (Parte 3 del lab)
+ ---------------------------------------------------------------------
+     def agregar(lista, valor, in_situ=False):
+         if in_situ:
+             destino = lista
+         else:
+             destino = lista.copy()
+         destino.append(valor)
+         return destino
+
+     numeros = [1, 2, 3]
+     r1 = agregar(numeros, 4, in_situ=True)
+     print(r1 is numeros)           ->  True
+     print(numeros)                 ->  [1, 2, 3, 4]
+     r2 = agregar(numeros, 5, in_situ=False)
+     print(r2 is numeros)           ->  False
+     print(numeros)                 ->  [1, 2, 3, 4]
+     print(r2)                      ->  [1, 2, 3, 4, 5]
+
+ Cómo funciona la función: el parámetro in_situ decide qué objeto se
+ modifica.
+     in_situ=True   destino es la misma lista que llegó. El original cambia y
+                    lo que se devuelve es ese mismo objeto.
+     in_situ=False  destino es una copia. El original no se toca y se
+                    devuelve una lista nueva.
+
+ Cuándo conviene cada una: mutar in situ ahorra memoria y es útil cuando
+ se quiere que el cambio se vea en todas las referencias. Devolver una copia
+ es más seguro porque evita efectos inesperados en el resto del programa.
+
+
+------------------------------------------------------------------------------
+ 5. TABLA DE PREDICCIÓN Y RESULTADO REAL  (TAREA)
+------------------------------------------------------------------------------
+
+ Ej.  Qué se predice                          Resultado real   ¿Coincide?
+ ---  --------------------------------------  ---------------  -------------
+  1   a e b apuntan al mismo 42; al sumar,    True, 42 43,     Sí
+      b apunta a un 43 nuevo                  False
+  2   Una sola lista: el append se ve en      True, True,      Sí
+      las dos variables                       [1,2,3,4]
+  3   Las copias son independientes           [1,2,3] y        Sí
+                                              [1,2,3,99]
+  4   La copia superficial comparte las       [[99,2],[3,4]]   Sí
+      listas de adentro; la profunda no       [[1,2],[3,4]]
+  5   Los inmutables no cambian: se crean     hola / hola      Sí
+      objetos nuevos                          mundo, (1, 2) /
+                                              (1, 2, 3)
+  6   append se ve afuera; reasignar no       [1, 2] y [5]     Sí
+  7   Cada llamada empieza con lista vacía    [1] [1, 2]       NO (error
+                                              [1, 2, 3]        típico)
+  8   in_situ=True cambia el original;        True/False y     Sí
+      False no                                listas correctas
+
+ Nota: la columna "Resultado real" sale de ejecutar el programa en Python 3.
+ Falta anotar la verificación propia en Python Tutor (sección 6).
+
+ Anotación del ejercicio 7: es el caso donde la intuición suele fallar. Se
+ espera [1], [2], [3] porque parece que cada llamada crea una lista nueva,
+ pero el valor por defecto se evalúa una sola vez. Con Python Tutor se ve
+ claro que las tres llamadas apuntan a la misma lista.
+
+
+------------------------------------------------------------------------------
+ 6. CÓMO VERIFICAR CON PYTHON TUTOR
+------------------------------------------------------------------------------
+
+   1. Abrir  pythontutor.com  en el navegador.
+   2. Elegir "Python 3" y pegar el fragmento de UN ejercicio (sin el input
+      del final).
+   3. Presionar "Visualize Execution".
+   4. Avanzar con "Next" línea por línea y observar:
+        - Las flechas que salen de cada variable hacia su objeto.
+        - Si dos variables apuntan al mismo cuadro (aliasing).
+        - Cuándo aparece un objeto nuevo (copias, inmutables).
+   5. Comparar con la predicción y anotar si coincidió y por qué.
+
+ Qué buscar en cada caso:
+   Ejercicios 1 y 5  Una flecha que se mueve hacia un objeto nuevo.
+   Ejercicios 2 y 6  Dos flechas al mismo objeto lista.
+   Ejercicio 4       Las dos listas externas distintas, pero con flechas
+                     compartidas hacia las listas de adentro (superficial).
+   Ejercicio 7       La lista por defecto guardada junto a la función.
+
+
+------------------------------------------------------------------------------
+ 7. CONCLUSIONES
+------------------------------------------------------------------------------
+
+   - En Python las variables no guardan datos: apuntan a objetos. Asignar
+     (b = a) copia la referencia, no el objeto.
+   - Con objetos mutables (list) dos referencias al mismo objeto significan
+     que un cambio por una afecta a la otra: eso es el aliasing.
+   - Con objetos inmutables (int, str, tuple) no hay ese problema, porque
+     "modificar" siempre crea un objeto nuevo.
+   - Para tener una lista independiente hay que copiarla: copy() o list()
+     para listas simples y deepcopy() para listas anidadas.
+   - Al diseñar funciones hay que decidir de forma explícita si se muta el
+     parámetro o se devuelve una copia, y dejarlo claro a quien la use.
+   - Esta idea es la base de la semana siguiente: en las listas enlazadas
+     cada nodo guarda una referencia al siguiente nodo.
+
+
+------------------------------------------------------------------------------
+ 8. REQUISITOS Y EJECUCIÓN
+------------------------------------------------------------------------------
+
+ Requisito: Python 3.8 o superior. Solo se usa el módulo copy, que ya viene
+ con Python (no hay que instalar nada).
+
+ Para ejecutar:
+   1. Guarde lab04_referencias_aliasing.py en una carpeta.
+   2. Abra una consola (CMD, PowerShell o Terminal) en esa carpeta.
+   3. Escriba:
+
+          python lab04_referencias_aliasing.py
+
+      (En algunos equipos el comando es  py  o  python3.)
+
+ También se puede abrir con doble clic: al terminar, el programa espera que
+ se presione ENTER para que la ventana no se cierre sola.
+
+
+------------------------------------------------------------------------------
+ 9. ENTREGA
+------------------------------------------------------------------------------
+
+ Ruta en el repositorio:
+
+     modulo-2-estructuras-dinamicas/semana-04/laboratorio/
+         lab04_referencias_aliasing.py
+
+ Para subirlo, desde la carpeta del repositorio:
+
+     git add modulo-2-estructuras-dinamicas/semana-04/laboratorio/
+     git commit -m "Laboratorio semana 4: referencias y aliasing"
+     git push
+
+------------------------------------------------------------------------------
+ Fin del documento
+------------------------------------------------------------------------------

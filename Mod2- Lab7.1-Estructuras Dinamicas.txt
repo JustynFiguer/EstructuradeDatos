@@ -1,0 +1,86 @@
+UNIVERSIDAD DE PANAMA
+FACULTAD DE INFORMATICA, ELECTRONICA Y COMUNICACIONES (FIEC)
+INF222 - ESTRUCTURA DE DATOS
+
+SEMANA 7 - LISTAS DOBLEMENTE ENLAZADAS
+LABORATORIO 6
+
+Desarrollado por: Justiniano Figueroa
+Profesor: Angel Avila
+
+----------------------------------------------------------
+DESCRIPCION
+----------------------------------------------------------
+Implementacion en Python de una lista doblemente enlazada.
+Cada nodo guarda un dato y dos referencias: anterior y siguiente.
+Esto permite recorrer la lista en ambas direcciones.
+
+Archivo del laboratorio: lab07_lista_doble.py
+
+----------------------------------------------------------
+ESTRUCTURAS
+----------------------------------------------------------
+1. Nodo
+   - dato
+   - anterior
+   - siguiente
+
+2. ListaDoblementeEnlazada
+   - cabeza (primer nodo)
+   - cola (ultimo nodo)
+   - tamano (cantidad de nodos)
+
+----------------------------------------------------------
+OPERACIONES
+----------------------------------------------------------
+esta_vacia()                      Indica si la lista no tiene nodos
+insertar_inicio(dato)             Inserta al inicio                O(1)
+insertar_final(dato)              Inserta al final                 O(1)
+insertar_en_posicion(pos, dato)   Inserta en posicion intermedia   O(n)
+eliminar_inicio()                 Elimina el primer nodo           O(1)
+eliminar_final()                  Elimina el ultimo nodo           O(1)
+eliminar_en_posicion(pos)         Elimina en posicion intermedia   O(n)
+eliminar_valor(dato)              Elimina la primera coincidencia  O(n)
+buscar(dato)                      Devuelve la posicion o -1        O(n)
+recorrer_adelante()               Recorre de cabeza a cola         O(n)
+recorrer_atras()                  Recorre de cola a cabeza         O(n)
+len(lista)                        Cantidad de nodos                O(1)
+
+Nota: insertar o eliminar es O(1) si ya se tiene el nodo,
+y O(n) si primero hay que buscarlo.
+
+----------------------------------------------------------
+DIAGRAMA
+----------------------------------------------------------
+None <- [1] <-> [2] <-> [3] -> None
+         ^                ^
+       cabeza            cola
+
+Insertar 0 al inicio:
+None <- [0] <-> [1] <-> [2] <-> [3] -> None
+
+Eliminar el nodo [2]:
+None <- [0] <-> [1] <-> [3] -> None
+
+----------------------------------------------------------
+COMPARATIVA DEL MODULO 2
+----------------------------------------------------------
+Lista simple:                 un sentido, termina en None
+Lista circular:               el ultimo apunta al primero
+Lista circular con cabeza:    circular con un nodo cabeza especial
+Lista doble:                  dos sentidos (anterior y siguiente)
+
+----------------------------------------------------------
+APLICACIONES
+----------------------------------------------------------
+- Deque eficiente
+- Navegacion bidireccional
+- Listas de reproduccion editables
+
+----------------------------------------------------------
+COMO EJECUTAR
+----------------------------------------------------------
+python lab07_lista_doble.py
+
+Ruta de entrega en el repositorio:
+modulo-2-estructuras-dinamicas/semana-07/laboratorio/lab07_lista_doble.py

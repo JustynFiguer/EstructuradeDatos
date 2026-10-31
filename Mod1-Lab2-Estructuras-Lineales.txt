@@ -1,0 +1,258 @@
+﻿==============================================================================
+ LABORATORIO 2 - PILA ENLAZADA, COLA Y SIMULADOR DE COLA DE IMPRESION
+==============================================================================
+
+ Universidad de Panamá
+ Facultad de Informática, Electrónica y Comunicación (FIEC)
+ Asignatura : Estructura de Datos - INF222
+ Módulo 1   : Estructuras de datos lineales - Semana 2
+ Tema       : Pilas avanzadas y Colas
+ Desarrollado por : Justiniano Figueroa
+ Profesor         : Ángel Ávila
+ Archivo          : lab02_pila_enlazada_cola.py
+ Lenguaje         : Python 3
+
+
+------------------------------------------------------------------------------
+ 1. OBJETIVO
+------------------------------------------------------------------------------
+
+ - Implementar una pila usando nodos enlazados (sin usar una lista de Python
+   como base) y compararla con la pila hecha con lista del Laboratorio 1.
+ - Aplicar pilas a problemas reales: paréntesis balanceados y evaluación de
+   expresiones en notación postfija.
+ - Comprender la cola (queue), su principio FIFO y sus operaciones.
+ - Implementar la clase Cola y usarla en un simulador de cola de impresión.
+
+
+------------------------------------------------------------------------------
+ 2. QUÉ INCLUYE EL ARCHIVO
+------------------------------------------------------------------------------
+
+ Todo está en un solo archivo, en este orden:
+
+ 1) Clase Nodo
+      Guarda un dato y la referencia al siguiente nodo.
+
+ 2) Clase PilaEnlazada  (LIFO)
+      La cabeza de la lista enlazada es el tope de la pila:
+
+          cabeza -> [3] -> [2] -> [1] -> None
+
+      Métodos: push, pop, peek, is_empty, size, mostrar
+      push y pop trabajan siempre sobre la cabeza, por eso cuestan O(1).
+
+ 3) Función esta_balanceado(texto)
+      Verifica paréntesis, corchetes y llaves  ( )  [ ]  { }
+      usando una PilaEnlazada.
+
+ 4) Clase Cola  (FIFO)
+
+          frente -> [1] -> [2] -> [3] -> final
+
+      Métodos: enqueue, dequeue, front, is_empty, size, mostrar
+      Guarda la referencia al frente y al final, así enqueue y dequeue
+      cuestan O(1).
+
+ 5) Mini-proyecto: simulador de cola de impresión
+      Clases TrabajoImpresion y SimuladorImpresion. Los documentos se
+      imprimen en el orden en que llegaron (FIFO). Calcula páginas impresas
+      y tiempo simulado (2 segundos por página).
+
+ 6) Tarea: función evaluar_postfija(expresion)
+      Evalúa expresiones en notación postfija usando PilaEnlazada. El
+      algoritmo está explicado paso a paso en los comentarios del código.
+
+
+------------------------------------------------------------------------------
+ 3. OPERACIONES
+------------------------------------------------------------------------------
+
+ PilaEnlazada                                   Si está vacía
+ --------------------------------------------   ------------------------
+ push(dato)  Agrega un elemento en el tope      -
+ pop()       Quita y devuelve el tope           Lanza IndexError
+ peek()      Devuelve el tope sin quitarlo      Lanza IndexError
+ is_empty()  True si no hay elementos           Devuelve True
+ size()      Cantidad de elementos              Devuelve 0
+ mostrar()   Lista de la base al tope           Devuelve []
+
+ Cola                                           Si está vacía
+ --------------------------------------------   ------------------------
+ enqueue(dato) Agrega un elemento al final      -
+ dequeue()     Quita y devuelve el del frente   Lanza IndexError
+ front()       Devuelve el del frente           Lanza IndexError
+ is_empty()    True si no hay elementos         Devuelve True
+ size()        Cantidad de elementos            Devuelve 0
+ mostrar()     Lista del frente al final        Devuelve []
+
+
+------------------------------------------------------------------------------
+ 4. ALGORITMO: PARÉNTESIS BALANCEADOS
+------------------------------------------------------------------------------
+
+ Para cada carácter del texto:
+   - Si es de apertura  ( [ {   -> se guarda en la pila (push).
+   - Si es de cierre    ) ] }   -> se compara con el tope de la pila:
+        * pila vacía               -> False (se cerró algo sin abrir)
+        * el tope no es su pareja  -> False (los pares se cruzaron)
+ Al terminar, la pila debe quedar vacía; si no, quedaron símbolos sin cerrar.
+
+ Ejemplos:
+     {[()]}         ->  balanceado
+     a * (b + c)    ->  balanceado
+     {[(])}         ->  NO balanceado  (pares cruzados)
+     (()            ->  NO balanceado  (falta cerrar uno)
+
+
+------------------------------------------------------------------------------
+ 5. TAREA: EVALUACIÓN DE NOTACIÓN POSTFIJA
+------------------------------------------------------------------------------
+
+ En la notación postfija el operador va después de los operandos, por eso no
+ hacen falta paréntesis. Los elementos se separan con espacios.
+
+ Algoritmo, de izquierda a derecha:
+   1. Si el elemento es un número  -> push a la pila.
+   2. Si es un operador (+ - * /):
+        a. pop del operando derecho (b) y luego del izquierdo (a)
+           (el orden importa en la resta y la división)
+        b. calcular  a operador b
+        c. push del resultado
+   3. Al final debe quedar un solo elemento en la pila: el resultado.
+
+ Seguimiento de  "3 4 + 5 *"  (ejemplo del profesor, resultado 35):
+
+     3  ->  pila [3]
+     4  ->  pila [3, 4]
+     +  ->  pop 4, pop 3, push 3+4   ->  pila [7]
+     5  ->  pila [7, 5]
+     *  ->  pop 5, pop 7, push 7*5   ->  pila [35]
+
+ Resultado: 35
+
+ Más ejemplos:
+     5 1 2 + 4 * + 3 -   ->  14
+     2 3 4 * +           ->  14
+     10 2 /              ->  5
+
+ Errores controlados (lanzan ValueError o ZeroDivisionError):
+     "3 +"      faltan operandos
+     "3 4"      sobran operandos
+     "3 a +"    elemento no válido
+     "5 0 /"    división entre cero
+     ""         expresión vacía
+
+
+------------------------------------------------------------------------------
+ 6. SIMULADOR DE COLA DE IMPRESIÓN
+------------------------------------------------------------------------------
+
+ Cada trabajo tiene documento, usuario y número de páginas. El simulador:
+   - enviar(trabajo)        pone el trabajo al final de la cola
+   - imprimir_siguiente()   imprime el trabajo del frente
+   - imprimir_todos()       vacía la cola
+   - paginas_impresas()     total de páginas ya impresas
+
+ Ejemplo de la demostración (el primero en llegar es el primero en salir):
+
+     [Enviado]  'Informe_Lab1.pdf' de Justiniano (5 pág.)   | en espera: 1
+     [Enviado]  'Tarea_Estructuras.docx' de Ana (12 pág.)   | en espera: 2
+     [Enviado]  'Horario.png' de Luis (1 pág.)              | en espera: 3
+     [Impreso]  'Informe_Lab1.pdf' de Justiniano (5 pág.)   | 10 s
+     [Enviado]  'Resumen.pdf' de Marta (3 pág.)             | llega después
+     [Impreso]  'Tarea_Estructuras.docx' ...                | 24 s
+     [Impreso]  'Horario.png' ...                           | 2 s
+     [Impreso]  'Resumen.pdf' ...                           | 6 s
+     Total: 4 trabajos, 21 páginas, 42 segundos simulados
+
+
+------------------------------------------------------------------------------
+ 7. PRUEBAS INCLUIDAS (18)
+------------------------------------------------------------------------------
+
+ Pila enlazada (6)
+   probar_pila_vacia                  probar_pila_push_y_peek
+   probar_pila_orden_lifo             probar_pila_vacia_lanza_error
+   probar_pila_enlaces                probar_pila_diferentes_datos
+
+ Paréntesis balanceados (2)
+   probar_parentesis_balanceados      probar_parentesis_no_balanceados
+
+ Cola (5)
+   probar_cola_vacia                  probar_cola_enqueue_y_front
+   probar_cola_orden_fifo             probar_cola_vacia_lanza_error
+   probar_cola_se_puede_reutilizar
+
+ Simulador de impresión (2)
+   probar_simulador_respeta_fifo
+   probar_simulador_cola_vacia_y_datos_invalidos
+
+ Notación postfija (3)
+   probar_postfija_ejemplo_del_profesor
+   probar_postfija_otras_expresiones
+   probar_postfija_expresiones_invalidas
+
+
+------------------------------------------------------------------------------
+ 8. REQUISITOS Y EJECUCIÓN
+------------------------------------------------------------------------------
+
+ Requisito: Python 3.8 o superior. No se instala ninguna librería adicional.
+ Para ver la versión instalada, escriba en la consola:
+
+     python --version
+
+ Para ejecutar:
+   1. Guarde lab02_pila_enlazada_cola.py en una carpeta.
+   2. Abra una consola (CMD, PowerShell o Terminal) en esa carpeta.
+   3. Escriba:
+
+          python lab02_pila_enlazada_cola.py
+
+      (En algunos equipos el comando es  py  o  python3.)
+
+ También se puede abrir con doble clic: al terminar, el programa espera que
+ se presione ENTER para que la ventana no se cierre sola.
+
+ Resultado esperado al final de las pruebas:
+
+     Pruebas completadas: 18 de 18
+     ...
+     El laboratorio 2 funciona correctamente.
+
+ Si una prueba falla, Python muestra un AssertionError con la línea exacta.
+
+
+------------------------------------------------------------------------------
+ 9. ENTREGA
+------------------------------------------------------------------------------
+
+ Ruta del archivo en el repositorio:
+
+     modulo-1-estructuras-lineales/semana-02/laboratorio/
+         lab02_pila_enlazada_cola.py
+
+ Para subirlo, desde la carpeta del repositorio:
+
+     git add modulo-1-estructuras-lineales/semana-02/laboratorio/lab02_pila_enlazada_cola.py
+     git commit -m "Laboratorio 2: pila enlazada, cola y simulador de impresion"
+     git push
+
+ Recuerde subirlo antes de la fecha límite del aula virtual.
+
+
+------------------------------------------------------------------------------
+ 10. PILA CON LISTA vs. PILA ENLAZADA
+------------------------------------------------------------------------------
+
+                      Con lista (Lab. 1)       Enlazada (Lab. 2)
+ -------------------  -----------------------  ----------------------------
+ Dónde está el tope   Último índice (-1)       Cabeza de la lista enlazada
+ push / pop           O(1) amortizado          O(1)
+ Memoria              Arreglo contiguo         Un nodo por elemento
+ Se apoya en          list de Python           Clase Nodo propia
+
+------------------------------------------------------------------------------
+ Fin del documento
+------------------------------------------------------------------------------

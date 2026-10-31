@@ -1,0 +1,83 @@
+Laboratorio 1: Implementación de una pila
+
+Universidad de Panamá Facultad de Informática, Electrónica y Comunicación (FIEC) Asignatura: Estructura de Datos (INF222)
+
+	
+Desarrollado por	Justiniano Figueroa
+Profesor	Ángel Ávila
+Archivo	Laboratorio_Pila_1_Justiniano_Figueroa.py
+Lenguaje	Python 3
+¿Qué es una pila?
+
+Una pila es una estructura de datos que sigue el principio LIFO (Last In, First Out): el último elemento que entra es el primero que sale. Se puede imaginar como una pila de platos: solo se agrega o se retira el plato que está arriba.
+
+Ejemplos de uso: el botón "deshacer" de un editor, el historial de páginas de un navegador, la revisión de paréntesis balanceados en una expresión.
+
+¿Qué contiene este laboratorio?
+
+Una clase Pila implementada con una lista de Python, y un conjunto de pruebas automáticas que verifican su comportamiento.
+
+Operaciones de la clase Pila
+Método	Descripción	Si la pila está vacía
+push(dato)	Agrega un elemento en la cima de la pila.	—
+pop()	Quita y devuelve el elemento de la cima.	Lanza IndexError
+peek()	Devuelve el elemento de la cima sin quitarlo.	Lanza IndexError
+is_empty()	Devuelve True si la pila no tiene elementos.	Devuelve True
+size()	Devuelve la cantidad de elementos.	Devuelve 0
+mostrar()	Devuelve la lista con todos los elementos (el último es la cima).	Devuelve []
+
+Todas las operaciones se ejecutan en tiempo constante, O(1).
+
+Pruebas incluidas
+Prueba	Qué verifica
+probar_pila_vacia	Una pila nueva está vacía y su tamaño es 0.
+probar_agregar_y_ver	push agrega elementos y peek devuelve el último sin quitarlo.
+probar_orden_de_salida	Los elementos salen en orden inverso al que entraron (LIFO).
+probar_operaciones_con_pila_vacia	pop y peek lanzan IndexError cuando no hay elementos.
+probar_diferentes_datos	La pila acepta datos de distintos tipos (texto, entero, decimal).
+probar_invertir_palabra	Aplicación: invertir la palabra "hola" usando una pila.
+probar_parentesis	Aplicación: verificar si los paréntesis de una expresión están balanceados.
+Requisitos
+Python 3.8 o superior. No se necesita instalar ninguna librería adicional.
+
+Para comprobar la versión instalada:
+
+python --version
+Cómo ejecutarlo
+Guarde el archivo Laboratorio_Pila_1_Justiniano_Figueroa.py en una carpeta.
+Abra una consola (CMD, PowerShell o Terminal) en esa carpeta.
+Ejecute:
+python Laboratorio_Pila_1_Justiniano_Figueroa.py
+
+(En algunos equipos el comando es py o python3 en lugar de python.)
+
+También se puede abrir con doble clic: al terminar, el programa espera que se presione ENTER para que la ventana no se cierre sola.
+
+Resultado esperado
+
+Si todas las pruebas pasan, la consola muestra el encabezado del laboratorio, el nombre de cada prueba realizada y un resumen final:
+
+Prueba realizada: probar_pila_vacia
+Prueba realizada: probar_agregar_y_ver
+Prueba realizada: probar_orden_de_salida
+Prueba realizada: probar_operaciones_con_pila_vacia
+Prueba realizada: probar_diferentes_datos
+Prueba realizada: probar_invertir_palabra
+Prueba realizada: probar_parentesis
+*****************************************
+Pruebas completadas: 7
+La pila funciona correctamente.
+*****************************************
+
+Si alguna prueba falla, Python muestra un AssertionError indicando la línea donde la comprobación no se cumplió.
+
+Ejemplo de uso de la clase
+python
+pila = Pila()
+pila.push(10)
+pila.push(20)
+
+print(pila.peek())     # 20  (la cima, sin quitarla)
+print(pila.pop())      # 20  (sale el último que entró)
+print(pila.size())     # 1
+print(pila.is_empty()) # False

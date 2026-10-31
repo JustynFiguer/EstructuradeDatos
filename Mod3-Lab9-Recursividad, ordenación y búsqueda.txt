@@ -1,0 +1,26 @@
+==============================================================================
+ UNIVERSIDAD DE PANAMÁ
+ FACULTAD DE INFORMÁTICA, ELECTRÓNICA Y COMUNICACIÓN (FIEC)
+ Asignatura: Estructura de Datos (INF222)
+ Profesor: Ángel Ávila
+ Estudiante / Desarrollador: Justiniano Figueroa
+ Periodo: Segundo Semestre 2026
+==============================================================================
+
+Laboratorio 9: Recursividad, Ordenación y Búsqueda
+
+Descripción del Proyecto:
+Este proyecto corresponde al desarrollo de las actividades prácticas de la Semana 9 del curso de Estructura de Datos. 
+
+El código implementa de forma limpia, sencilla y directa los siguientes algoritmos del Módulo 3:
+1. Quicksort (Ordenamiento rápido): Algoritmo eficiente basado en divide y vencerás para ordenar arreglos de manera ascendente.
+2. Búsqueda Binaria Recursiva: Algoritmo de búsqueda logarítmica que opera sobre arreglos previamente ordenados.
+
+Estructura de Archivos:
+- laboratorio_09.py: Script principal que contiene el encabezado institucional, la implementación de los algoritmos y la función de prueba (main).
+- README.txt: Documentación detallada del laboratorio en formato de texto plano.
+
+Instrucciones de Ejecución:
+Asegúrese de tener instalado Python 3. Ejecute el siguiente comando en su terminal:
+
+python laboratorio_09.py
