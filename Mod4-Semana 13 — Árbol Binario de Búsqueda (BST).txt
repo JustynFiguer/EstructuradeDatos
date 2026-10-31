@@ -1,0 +1,85 @@
+UNIVERSIDAD DE PANAMA
+Facultad de Informatica, Electronica y Comunicaciones (FIEC)
+Asignatura: Estructura de Datos
+Profesor: Angel Avila
+Desarrollado por: Justiniano Figueroa
+
+LABORATORIO 11 - ARBOL BINARIO DE BUSQUEDA (BST)
+Modulo 4, Semana 13
+----------------------------------------------------
+
+QUE ES ESTE LABORATORIO
+Un arbol binario de busqueda (BST) es un arbol donde cada nodo
+cumple una regla: todo lo que esta a su izquierda es menor y todo
+lo que esta a su derecha es mayor. Gracias a esa regla se puede
+buscar un dato sin recorrer todo el arbol, parecido a la busqueda
+binaria.
+
+En este laboratorio se implementa un BST completo en Python con
+las operaciones insertar, buscar y eliminar, y se compara un arbol
+balanceado con uno degenerado midiendo su altura.
+
+ESTRUCTURA DEL PROYECTO
+  laboratorio/
+      lab13_bst.py     Codigo del laboratorio
+  LEEME.txt            Este archivo
+
+COMO EJECUTARLO
+1. Tener instalado Python 3.
+2. Abrir una terminal dentro de la carpeta del proyecto.
+3. Ejecutar:
+       python laboratorio/lab13_bst.py
+   (en algunos equipos: python3 laboratorio/lab13_bst.py)
+
+COMO ESTA HECHO EL CODIGO
+- NodoArbol: guarda un dato, el hijo izquierdo y el hijo derecho.
+- ArbolBinarioBusqueda: maneja el arbol completo.
+    insertar(dato)  Baja por el arbol segun la regla hasta encontrar
+                    un lugar vacio y ahi coloca el nodo. Si el dato
+                    ya existe, no lo repite.
+    buscar(dato)    Baja comparando igual que al insertar. Devuelve
+                    True si lo encuentra y False si no.
+    eliminar(dato)  Maneja los tres casos (ver abajo).
+    inorden()       Devuelve los datos ordenados de menor a mayor.
+    altura()        Cantidad de niveles que tiene el arbol (la raiz
+                    sola tiene altura 0).
+    dibujar()       Muestra el arbol de lado: la raiz queda a la
+                    izquierda, los mayores arriba y los menores
+                    abajo.
+
+LOS 3 CASOS AL ELIMINAR
+1. Hoja (sin hijos): se desconecta el nodo y ya.
+2. Un solo hijo: el padre se conecta directamente con ese hijo.
+3. Dos hijos: el dato del nodo se reemplaza con el sucesor inorden
+   (el minimo del subarbol derecho) y luego se elimina ese sucesor.
+
+QUE HACE EL PROGRAMA AL EJECUTARLO
+1. Muestra la presentacion y las instrucciones.
+2. Prueba insertar y buscar con un arbol de 8 datos.
+3. Prueba los tres casos de eliminacion.
+4. Compara un arbol balanceado con uno degenerado:
+     - Con 7 datos: altura 2 contra altura 6.
+     - Con 300 datos: altura 8 contra altura 299.
+5. Ofrece un menu para insertar, buscar, eliminar y ver el arbol
+   con los numeros que el usuario quiera.
+
+ARBOL BALANCEADO CONTRA DEGENERADO
+Si los datos se insertan en orden creciente (10, 20, 30, ...),
+cada nodo nuevo se va hacia la derecha y el arbol queda como una
+lista enlazada. En ese caso insertar, buscar y eliminar cuestan
+O(n). Si los datos llegan mezclados o en un orden equilibrado, el
+arbol queda parejo y esas operaciones cuestan O(log n).
+
+Una solucion a este problema son los arboles AVL, que se rebalancean
+solos con rotaciones. Eso se estudia como ampliacion en la teoria.
+
+MENU INTERACTIVO
+  1. Insertar    Pide un numero entero y lo agrega.
+  2. Buscar      Dice si el numero esta o no.
+  3. Eliminar    Quita el numero si existe.
+  4. Ver arbol   Dibuja el arbol y muestra inorden, nodos y altura.
+  5. Salir
+
+APLICACIONES REALES
+Los BST y sus variantes se usan en indices de bases de datos y en
+sistemas de autocompletado, entre otros.
