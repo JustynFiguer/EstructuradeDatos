@@ -1,0 +1,92 @@
+UNIVERSIDAD DE PANAMA
+Facultad de Informatica, Electronica y Comunicaciones (FIEC)
+Asignatura: Estructura de Datos
+Profesor: Angel Avila
+Desarrollado por: Justiniano Figueroa
+
+LABORATORIO 12 - GRAFO + BFS + DFS
+Modulo 4: Arboles y grafos - Semana 14
+----------------------------------------------------
+
+DESCRIPCION
+El programa construye un grafo no dirigido con lista de adyacencia y
+lo recorre con dos metodos: BFS (en anchura) y DFS (en profundidad).
+
+ARCHIVOS
+  laboratorio/
+      lab14_grafos.py   Codigo del programa
+  LEEME.txt             Este archivo
+
+COMO EJECUTARLO
+1. Tener instalado Python 3.
+2. Abrir una terminal dentro de la carpeta del proyecto.
+3. Ejecutar:
+       python laboratorio/lab14_grafos.py
+   (en algunos equipos: python3 laboratorio/lab14_grafos.py)
+
+QUE HACE EL PROGRAMA, PASO A PASO
+1. Muestra la presentacion con los datos de la universidad y las
+   instrucciones.
+2. Arma el grafo de ejemplo:
+
+         A - B - D
+         |   |
+         C   E
+
+3. Muestra la lista de adyacencia:
+         A: [B, C]
+         B: [A, D, E]
+         C: [A]
+         D: [B]
+         E: [B]
+
+4. Recorre el grafo desde A:
+         BFS desde A: A, B, C, D, E
+         DFS desde A: A, C, B, E, D
+
+5. Pide otro vertice de inicio (A, B, C, D o E) y muestra de nuevo
+   el BFS y el DFS desde ese vertice. Con Enter termina el programa.
+
+COMO ESTA HECHO EL CODIGO
+Clase Grafo:
+  - lista: diccionario donde cada vertice guarda la lista de sus
+    vecinos (lista de adyacencia).
+  - agregar_arista(a, b): une a con b en los dos sentidos, porque el
+    grafo es no dirigido. Si un vertice no existe, lo crea.
+  - bfs(inicio): recorrido en anchura. Usa una cola.
+  - dfs(inicio): recorrido en profundidad. Usa una pila.
+
+Funciones del programa:
+  - presentacion(): imprime el encabezado y las instrucciones.
+  - main(): arma el grafo, imprime los resultados y pide vertices.
+
+BFS (RECORRIDO EN ANCHURA)
+Visita el grafo por niveles: primero el vertice de inicio, luego sus
+vecinos, luego los vecinos de esos, y asi sucesivamente. Se saca el
+primero de la cola, se meten al final sus vecinos que no se han
+visitado y se repite hasta que la cola queda vacia.
+Sirve para encontrar el camino mas corto cuando no hay pesos.
+
+DFS (RECORRIDO EN PROFUNDIDAD)
+Se va lo mas profundo que puede por un camino antes de volver. Se
+saca el ultimo de la pila, se marca como visitado y se meten sus
+vecinos que no se han visitado. Sirve para detectar ciclos y explorar
+laberintos. El orden exacto depende del orden en que se agregaron
+los vecinos.
+
+En los dos recorridos se guarda una lista de visitados para no
+repetir vertices.
+
+RESULTADOS DE EJEMPLO
+  Desde A:  BFS = A, B, C, D, E    DFS = A, C, B, E, D
+  Desde D:  BFS = D, B, A, E, C    DFS = D, B, E, A, C
+
+CONCEPTOS
+  - Grafo: conjunto de vertices unidos por aristas.
+  - Dirigido: la arista tiene sentido (A->B no es B->A).
+  - No dirigido: la arista A-B tambien vale como B-A.
+  - Ponderado: las aristas tienen un peso.
+  - Lista de adyacencia: diccionario {vertice: [vecinos]}.
+    Espacio O(n+m).
+  - Matriz de adyacencia: tabla n x n con 1 si hay arista.
+    Espacio O(n^2).
