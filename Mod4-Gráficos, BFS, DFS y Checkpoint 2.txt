@@ -1,0 +1,129 @@
+UNIVERSIDAD DE PANAMA
+Facultad de Informatica, Electronica y Comunicaciones (FIEC)
+Asignatura: Estructura de Datos
+Profesor: Angel Avila
+Desarrollado por: Justiniano Figueroa
+
+LABORATORIO 12 - GRAFO + BFS + DFS
+Modulo 4: Arboles y grafos - Semana 14
+----------------------------------------------------
+
+DE QUE TRATA
+Esta semana se estudian los grafos y sus dos recorridos principales,
+BFS y DFS. El laboratorio implementa una clase Grafo con lista de
+adyacencia y los dos recorridos.
+
+QUE ES UN GRAFO
+Un grafo es un conjunto de vertices (nodos) unidos por aristas.
+  - Dirigido: la arista tiene sentido, A->B no es lo mismo que B->A.
+  - No dirigido: la arista A-B tambien vale como B-A.
+  - Ponderado: cada arista tiene un peso (distancia, costo, etc.).
+  - Otros conceptos: grado, camino, ciclo, grafo conexo y acliclico.
+El grafo de este laboratorio es no dirigido y sin pesos.
+
+REPRESENTACIONES
+  - Lista de adyacencia: un diccionario {vertice: [vecinos]}.
+    Espacio O(n+m). Consultar vecinos cuesta O(grado).
+    Es la que usa el programa para guardar el grafo.
+  - Matriz de adyacencia: tabla de n x n donde hay un 1 si existe
+    arista entre dos vertices y un 0 si no. Espacio O(n^2).
+    Consultar una arista cuesta O(1).
+    El programa la puede mostrar a partir de la lista.
+
+ARCHIVOS
+  laboratorio/
+      lab14_grafos.py   Codigo del laboratorio
+  LEEME.txt             Este archivo
+
+COMO EJECUTARLO
+1. Tener instalado Python 3.
+2. Abrir una terminal dentro de la carpeta del proyecto.
+3. Ejecutar:
+       python laboratorio/lab14_grafos.py
+   (en algunos equipos: python3 laboratorio/lab14_grafos.py)
+
+COMO ESTA HECHO EL CODIGO
+Clase Grafo:
+  agregar_vertice(v)     Crea el vertice con una lista de vecinos vacia.
+  agregar_arista(a, b)   Une a con b en los dos sentidos. Si el
+                         vertice no existe, lo crea.
+  bfs(inicio)            Recorrido en anchura. Usa una cola.
+  dfs(inicio)            Recorrido en profundidad. Usa una pila.
+  matriz()               Arma la matriz de adyacencia.
+  mostrar_lista()        Imprime la lista de adyacencia.
+  mostrar_matriz()       Imprime la matriz de adyacencia.
+
+BFS (RECORRIDO EN ANCHURA)
+Visita el grafo por niveles: primero el vertice de inicio, luego sus
+vecinos, luego los vecinos de esos, y asi. Se usa una cola: se saca el
+primero, se visitan sus vecinos que faltan y se meten al final de la
+cola. Sirve para hallar el camino mas corto cuando no hay pesos.
+
+DFS (RECORRIDO EN PROFUNDIDAD)
+Se va lo mas profundo que puede por un camino antes de volver. Se usa
+una pila: se saca el ultimo, se marca como visitado y se meten sus
+vecinos que faltan. Sirve para detectar ciclos y explorar laberintos.
+El orden exacto depende del orden en que se agregaron los vecinos.
+
+Los dos recorridos guardan los vertices ya visitados para no repetir
+ninguno ni quedar dando vueltas en un ciclo.
+
+QUE HACE EL PROGRAMA AL EJECUTARLO
+1. Muestra la presentacion y las instrucciones.
+2. Grafo de ejemplo con 5 vertices, su lista, su matriz y los
+   recorridos BFS y DFS desde A.
+3. Red de ciudades de Panamá con BFS y DFS desde Panamá.
+4. Un menu para armar un grafo propio.
+
+EJEMPLO DEL README (resultado obtenido)
+      A - B - D
+      |   |
+      C   E
+
+  Lista de adyacencia:
+    A: [B, C]
+    B: [A, D, E]
+    C: [A]
+    D: [B]
+    E: [B]
+
+  BFS desde A: A, B, C, D, E
+  DFS desde A: A, C, B, E, D
+
+RED DE CIUDADES DE PANAMA (tarea autonoma)
+  Panamá - Colón
+  Panamá - Penonomé
+  Penonomé - Santiago
+  Santiago - Chitré
+  Santiago - David
+  David - Boquete
+  David - Changuinola
+
+  BFS desde Panamá: Panamá, Colón, Penonomé, Santiago, Chitré,
+                    David, Boquete, Changuinola
+  DFS desde Panamá: Panamá, Penonomé, Santiago, David, Changuinola,
+                    Boquete, Chitré, Colón
+
+MENU PARA ARMAR TU PROPIO GRAFO
+  1. Agregar arista
+  2. Ver lista de adyacencia
+  3. Ver matriz de adyacencia
+  4. BFS
+  5. DFS
+  6. Salir
+
+APLICACIONES REALES
+  - GPS y mapas: intersecciones como vertices y calles como aristas.
+  - Redes sociales: usuarios como vertices y amistades como aristas.
+    BFS sirve para medir grados de separacion.
+  - Recomendaciones: usuarios y productos como vertices.
+  - Deteccion de ciclos en dependencias: se usa DFS.
+
+CHECKPOINT 2 DEL PROYECTO FINAL
+El checkpoint se entrega en equipo, aparte de este laboratorio.
+  - Archivo: proyecto-final/checkpoint-2/PLANTILLA-checkpoint-2.md,
+    renombrado a checkpoint-2.md.
+  - El equipo debe tener al menos 2 de las 3 estructuras de datos
+    requeridas integradas y funcionando.
+Este archivo depende del avance real de cada equipo, por eso se llena
+con los datos del proyecto del equipo.
